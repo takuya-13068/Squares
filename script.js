@@ -2,7 +2,7 @@
 //localStorage.clear()
 
 var t = 0; //time
-var mode = 3; 
+var mode = 0; 
 //mode: 0タイトル画面　1menu画面　2score mode画面　3story mode画面　
 //mode: -1設定画面  -2操作方法画面
 //mode 10-50scoremodeのマップ  50-99storymodeのマップ
@@ -83,6 +83,10 @@ const enemy_color = "rgba(150,0,0,1.0)";
 const enemycolor_r = 150;
 const enemycolor_g = 0;
 const enemycolor_b = 0;
+const enemycol2="rgba(224,134,0,1.0)";
+const enemycol2_r = 224;
+const enemycol2_g = 134;
+const enemycol2_b = 0;
 
 const goalcol1="rgba(218,255,179,1.0)";
 const goalcol2="rgba(255,204,153,1.0)";
@@ -173,7 +177,23 @@ var enemy_height=20;
 var radius;
 var a,b;
 
-
+//enemy操作
+var enemy_alpha=1.0;
+var enecheck=false;
+var enealphacount=0;
+var check1=true;
+var t_1;
+var enemy_alpha2=1.0;
+var enecheck2=false;
+var enealphacount2=0;
+var check2=true;
+var t_2;
+var enemy_alpha3=1.0;
+var enecheck3=false;
+var enealphacount3=0;
+var check3=true;
+var t_3;
+var y_check;
 
 //壁[左端のx, 左端のy, 横幅,縦幅]
 var wall=[[30,60,10,80],[40,50,360,10],[40,140,250,10],[290,140,10,300],[400,60,10,320],[410,370,100,10],[510,380,10,60],[300,440,210,10]];
@@ -233,6 +253,12 @@ function location_chara(){
             chara_width=20;
             chara_height=20;
         }
+    }
+    else if(mode==63){
+        chara_x=200;
+        chara_y=210;
+        chara_width=20;
+        chara_height=20;
     }
 
     else if (mode==13){ 
@@ -554,9 +580,91 @@ function enemy_motion3(y,k,p,lag){ //上下
     return y;
 }
 
-function enemy_motion4(x,k){//直進運動　
-    x+=k*t/60;
+function enemy_motion4(x,k,p){//直進運動　
+    x+=(k*t/60)%p;
     return x;
+}
+function enemy_motion_cannon(x,k,p){//直進運動　
+    if(enecheck){
+        enealphacount+=100;
+        enecheck=false;
+    }
+    else if(enealphacount>0){
+        enemy_alpha+=0.001;
+        enealphacount-=0.1;
+    }
+    else{
+        if(check1){
+            t_1=t;
+            check1=false;
+        }
+        enemy_alpha=1;
+        x+=(k*(t-t_1)/60);//pでのあまり分だけ進む
+        if(x-p/2<p+10){
+            enecheck=true;
+            check1=true;
+            enemy_alpha=0;
+        }
+    }
+    return x;
+}
+
+function enemy_motion_cannon2(x,k,p){//直進運動ver2
+    if(enecheck2){
+        enealphacount2+=100;
+        enecheck2=false;
+    }
+    else if(enealphacount2>0){
+        enemy_alpha2+=0.01;
+        enealphacount2-=1;
+    }
+    else{
+        if(check2){
+            t_2=t;
+            check2=false;
+        }
+        enemy_alpha2=1;
+        x+=(k*(t-t_2)/60);//pでのあまり分だけ進む
+        if(x-p/2<p+10){
+            enecheck2=true;
+            check2=true;
+            enemy_alpha2=0;
+        }
+    }
+    return x;
+}
+
+function enemy_motion_cannon3(x,y,k,p){//放物運動
+    if(enecheck3){
+        enealphacount3+=100;
+        enecheck3=false;
+    }
+    else if(enealphacount3>0){
+        enemy_alpha3+=0.002;
+        enealphacount3-=0.2;
+    }
+    else{
+        if(check3){
+            enemy_alpha3=1;
+            y_check=y;
+            t_3=t;
+            c_y=-10;
+            c_g=p;
+            check3=false;
+        }
+        //y=v_0t+gt^2
+        y+=c_y*(t-t_3)+c_g*((t-t_3)*(t-t_3))/2;
+        x+=(k*(t-t_3)/60);//pでのあまり分だけ進む
+        if(y>y_check){
+            enecheck3=true;
+            c_y=0;
+            c_a=0;
+            check3=true;
+            enemy_alpha3=0;
+        }
+    }
+    cannon_a=x;
+    cannon_b=y;
 }
 
 function enemy_motionc1(x,y,radius,p,lag){
@@ -695,6 +803,26 @@ function startarea(z){
         }
         for(let i=160; i<231; i+=40){
             for(let j=390; j<391; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+    }
+    if(z==5){
+        ctx2d.fillStyle=startcol_1;
+        for(let i=160; i<241; i+=40){
+            for(let j=130; j<311; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=180; i<231; i+=40){
+            for(let j=150; j<271; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        ctx2d.fillStyle=startcol_2;
+        for(let i=180; i<241; i+=40){
+            for(let j=130; j<311; j+=40){
+                ctx2d.fillRect(i,j,20,20)}
+        }
+        for(let i=160; i<241; i+=40){
+            for(let j=150; j<271; j+=40){
                 ctx2d.fillRect(i,j,20,20);}
         }
     }
@@ -1007,6 +1135,59 @@ function gamearea(z){
                 ctx2d.fillRect(i,j,20,20);}
         }
     }
+    if(z==5){
+        ctx2d.fillStyle=white;
+        for(let i=260; i<790; i+=40){
+            for(let j=130; j<311; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=280; i<790; i+=40){
+            for(let j=150; j<271; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=260; i<790; i+=40){
+            for(let j=370; j<531; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=280; i<790; i+=40){
+            for(let j=390; j<511; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=680; i<790; i+=40){
+            for(let j=310; j<371; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=660; i<790; i+=40){
+            for(let j=330; j<371; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        ctx2d.fillStyle=lightgray;
+        for(let i=280; i<790; i+=40){
+            for(let j=130; j<311; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=260; i<790; i+=40){
+            for(let j=150; j<271; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=280; i<790; i+=40){
+            for(let j=370; j<531; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=260; i<790; i+=40){
+            for(let j=390; j<511; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=660; i<790; i+=40){
+            for(let j=310; j<371; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=680; i<790; i+=40){
+            for(let j=330; j<371; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+
+    }
 }
 
 function goalarea(z){
@@ -1096,6 +1277,26 @@ function goalarea(z){
         }
         for(let i=160; i<231; i+=40){
             for(let j=270; j<271; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+    }
+    if(z==5){
+        ctx2d.fillStyle=goalcol1;
+        for(let i=160; i<241; i+=40){
+            for(let j=370; j<531; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=180; i<231; i+=40){
+            for(let j=390; j<511; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        ctx2d.fillStyle=goalcol2;
+        for(let i=180; i<241; i+=40){
+            for(let j=370; j<531; j+=40){
+                ctx2d.fillRect(i,j,20,20)}
+        }
+        for(let i=160; i<241; i+=40){
+            for(let j=390; j<511; j+=40){
                 ctx2d.fillRect(i,j,20,20);}
         }
     }
@@ -1191,16 +1392,28 @@ function chara_big(){
 function warp(){//ワープ
     if(mode==62){
         if(chara_x>=700 && chara_x<=740 && chara_y>=370 && chara_y<=410){
-            warp_a=true;
-            location_chara();
+            fadeout();
+            if(page_check){
+                incheck=true;
+                warp_a=true;
+                location_chara();
+            }
         }
         if(chara_x>=700 && chara_x<=740 && chara_y>=130 && chara_y<=170){
-            warp_b=true;
-            location_chara();
+            fadeout();
+            if(page_check){
+                incheck=true;
+                warp_b=true;
+                location_chara();
+            }
         }
         if(chara_x>=160 && chara_x<=200 && chara_y>=490 && chara_y<=530){
-            warp_c=true;
-            location_chara();
+            fadeout();
+            if(page_check){
+                incheck=true;
+                warp_c=true;
+                location_chara();
+            }
         }
     }
 }
@@ -1896,7 +2109,11 @@ function game_temp3(){
     const hit2= data[76]==enemycolor_r && data[77]==enemycolor_g && data[78]== enemycolor_b;
     const hit3= data[1520]==enemycolor_r && data[1521]==enemycolor_g && data[1522]== enemycolor_b;
     const hit4= data[1596]==enemycolor_r && data[1597]==enemycolor_g && data[1598]== enemycolor_b;
-    if (hit1 || hit2 || hit3 || hit4){
+    const hit5= data[0]==enemycol2_r && data[1]==enemycol2_g && data[2]== enemycol2_b;
+    const hit6= data[76]==enemycol2_r && data[77]==enemycol2_g && data[78]== enemycol2_b;
+    const hit7= data[1520]==enemycol2_r && data[1521]==enemycol2_g && data[1522]== enemycol2_b;
+    const hit8= data[1596]==enemycol2_r && data[1597]==enemycol2_g && data[1598]== enemycol2_b;
+    if (hit1 || hit2 || hit3 || hit4 || hit5 || hit6 || hit7 || hit8){
         death_check=true;
     }
 
@@ -1945,7 +2162,6 @@ function game_temp3(){
             }
         }
     }
-
 }
 
 function game_temp4(){
@@ -2059,11 +2275,8 @@ function init() {
         localStorage.setItem('Check', 'checked');
     }
     ////////////////////////////////////////////////
-
     
     tick();
-
-
 
     function tick() {
         if (mode==0) { //タイトル画面
@@ -2130,7 +2343,10 @@ function init() {
 
 
 
-            
+            ctx2d.font = "40px 'Impact'";
+            ctx2d.lineWidth = "5";
+            ctx2d.lineJoin = "miter";
+            ctx2d.miterLimit = "4";
 
             if (selectmode==0){
                 make_shape(340,167,290,197,290,137); //三角形描画
@@ -2235,10 +2451,10 @@ function init() {
 
             ctx2d.fillText("Menuに戻る", 400, 580);
 
-            
-            
-
-
+            ctx2d.font = "40px 'Impact'";
+            ctx2d.lineWidth = "5";
+            ctx2d.lineJoin = "miter";
+            ctx2d.miterLimit = "4";
 
             if (selectmode==0){
                 make_shape(340,167,290,197,290,137); //三角形描画
@@ -2300,6 +2516,10 @@ function init() {
             ctx2d.fillText("????", 400, 480);
             ctx2d.fillText("Menuに戻る", 400, 580);
 
+            ctx2d.font = "40px 'Impact'";
+            ctx2d.lineWidth = "5";
+            ctx2d.lineJoin = "miter";
+            ctx2d.miterLimit = "4";
             if (selectmode==0){
                 make_shape(340,167,290,197,290,137); //三角形描画
             }
@@ -2340,7 +2560,7 @@ function init() {
             if (to_normal){ //normalステージへの遷移
                 fadeout();
                 if(page_check){
-                    mode=62;
+                    mode=63;
                     to_normal=false;
                     selectmode=0;
                     incheck=true;
@@ -2848,7 +3068,7 @@ function init() {
             game_temp2();
 
             //enemy
-            ctx2d.fillStyle=enemy_color;
+            ctx2d.fillStyle=enemycol2;
             ctx2d.fillRect(300,200,40,80);
             ctx2d.fillRect(540,200,40,80);
             ctx2d.fillRect(340,400,40,80);
@@ -2856,7 +3076,7 @@ function init() {
             ctx2d.fillRect(420,280,40,80);
             ctx2d.fillRect(540,400,40,40);
 
-
+            ctx2d.fillStyle=enemy_color;
             ctx2d.fillRect(580,enemy_motion3(330,60,30,0),enemy_width,enemy_height);
             ctx2d.fillRect(620,enemy_motion3(330,130,20,0),enemy_width,enemy_height);
 
@@ -2870,9 +3090,10 @@ function init() {
             //enemy
             //ctx2d.fillStyle=black;
             //ctx2d.strokeRect(440,200,100,40);
-            ctx2d.fillStyle=enemy_color;
+            ctx2d.fillStyle=enemycol2;
             ctx2d.fillRect(440,200,100,40);
             ctx2d.fillRect(440,440,100,40);
+            ctx2d.fillStyle=enemy_color;
             enemy_motionc1(350,265,65,12,0);
             ctx2d.fillRect(a,b,enemy_width,enemy_height);
             enemy_motionc2(350,395,65,13);
@@ -2960,11 +3181,12 @@ function init() {
             game_temp2();
 
             //enemy
-            ctx2d.fillStyle=enemy_color;
+            ctx2d.fillStyle=enemycol2;
             ctx2d.fillRect(260,280,60,120);
             ctx2d.fillRect(500,280,60,120);
             ctx2d.fillRect(360,200,100,60);
             ctx2d.fillRect(360,420,100,60);
+            ctx2d.fillStyle=enemy_color;
             ctx2d.fillRect(enemy_motion1(400,80,-40,0),260,enemy_width,enemy_height*2);
             ctx2d.fillRect(enemy_motion1(400,80,40,1),300,enemy_width,enemy_height*2);
             ctx2d.fillRect(enemy_motion1(400,80,-40,1),340,enemy_width,enemy_height*2);
@@ -3250,7 +3472,111 @@ function init() {
             ctx2d.fillRect(140,430,640,10);
             ctx2d.fillRect(140,550,640,10);
 
+            //1up
+            if(realoneup){
+                ctx2d.fillStyle=oneupcol;
+                ctx2d.fillRect(565,160,30,30);
+                ctx2d.font = "25px san-serif";
+                ctx2d.fillStyle=white;
+                ctx2d.fillText("5", 572, 185);
+            }
+            
+            //savepoint
+            if(realsave){
+                ctx2d.fillStyle=savecol;
+                ctx2d.fillRect(460,500,30,30);
+                ctx2d.font = "25px san-serif";
+                ctx2d.fillStyle=black;
+                ctx2d.fillText("S", 467, 525);
+            }
+
+            //enemy move
+            ctx2d.fillStyle=enemy_color;
+            ctx2d.fillRect(300,enemy_motion3(330,80,24,0),enemy_width,enemy_height);
+            ctx2d.fillRect(400,enemy_motion3(210,80,24,0.5),enemy_width,enemy_height);
+            ctx2d.fillRect(400,enemy_motion3(450,80,-24,0.8),enemy_width,enemy_height);
+            ctx2d.fillRect(570,enemy_motion3(200,70,20,0),enemy_width,40);
+            ctx2d.fillRect(500,enemy_motion3(450,80,20,0),40,enemy_height);
+            ctx2d.fillRect(enemy_motion4(460,-60,200),160,20,enemy_height);
+            ctx2d.fillRect(enemy_motion4(650,-90,250),130,20,enemy_height);
+            ctx2d.fillRect(640,enemy_motion3(510,20,20,0),20,enemy_height);
+            ctx2d.fillRect(620,enemy_motion3(510,20,20,-0.6),20,enemy_height);
+            ctx2d.fillRect(600,enemy_motion3(510,20,20,-1.2),20,enemy_height);
+            ctx2d.fillRect(580,enemy_motion3(510,20,20,-1.8),20,enemy_height);
+            ctx2d.fillRect(560,enemy_motion3(510,20,20,-2.4),20,enemy_height);
+
+            ctx2d.fillRect(340,enemy_motion3(510,20,20,-2.4),20,enemy_height);
+            ctx2d.fillRect(320,enemy_motion3(510,20,20,-3),20,enemy_height);
+            ctx2d.fillRect(300,enemy_motion3(510,20,20,-3.6),20,enemy_height);
+            ctx2d.fillRect(280,enemy_motion3(510,20,20,-4.2),20,enemy_height);
+            ctx2d.fillRect(260,enemy_motion3(510,20,20,-4.8),20,enemy_height);
+            ctx2d.fillRect(240,enemy_motion3(510,20,20,-5.4),20,enemy_height);
+
+            
+            //enemy static
+            ctx2d.fillStyle=enemycol2;
+            ctx2d.fillRect(440,250,20,33);
+            ctx2d.fillRect(425,250,50,20);
+            ctx2d.fillRect(530,287,40,23);
+            ctx2d.fillRect(260,250,20,33);
+            ctx2d.fillRect(245,250,50,20);
+            ctx2d.fillRect(340,277,20,33);
+            ctx2d.fillRect(323,290,17,20);
+            ctx2d.fillRect(670,250,20,33);
+
             warp(62);
+
+            gametemp_fade();
+
+            game_temp3();
+        }
+
+        if(mode==63){
+            game_temp1(4);
+            startarea(5);
+            goalarea(5);
+            gamearea(5);
+
+            //character
+            ctx2d.fillStyle="rgba(0,0,255,"+chara_alpha+")";
+            ctx2d.fillRect(chara_x,chara_y,chara_width,chara_height);
+
+            //wall
+            ctx2d.fillStyle=black;
+            ctx2d.fillRect(140,120,20,190);
+            ctx2d.fillRect(140,360,20,190);
+            ctx2d.fillRect(650,310,10,60);
+            ctx2d.fillRect(800,120,10,440);
+
+            ctx2d.fillRect(140,120,670,10);
+            ctx2d.fillRect(140,310,510,10);
+            ctx2d.fillRect(140,360,510,10);
+            ctx2d.fillRect(140,550,670,10);
+
+            
+            //enemy
+            ctx2d.fillStyle="rgba(150,0,0,"+enemy_alpha+")";
+            ctx2d.fillRect(enemy_motion_cannon(750,-230,300),200,enemy_width,enemy_height);
+            ctx2d.fillRect(enemy_motion_cannon(760,-300,310),140,enemy_width,enemy_height);
+            ctx2d.fillRect(enemy_motion_cannon(550,-270,250),220,enemy_width,enemy_height);
+
+            ctx2d.fillStyle="rgba(150,0,0,"+enemy_alpha2+")";
+            ctx2d.fillRect(enemy_motion_cannon2(480,-220,200),160,enemy_width,enemy_height);
+            
+            ctx2d.fillRect(enemy_motion_cannon2(480,-200,180),260,enemy_width,enemy_height);
+            ctx2d.fillRect(enemy_motion_cannon2(560,-250,200),280,enemy_width,enemy_height);
+
+            ctx2d.fillRect(enemy_motion_cannon2(760,-180,420),340,enemy_width,enemy_height);
+
+            ctx2d.fillStyle="rgba(150,0,0,"+enemy_alpha3+")";
+            enemy_motion_cannon3(600,520,-300,0.5);
+            ctx2d.fillRect(cannon_a,cannon_b,enemy_width,enemy_height);
+            enemy_motion_cannon3(750,450,-320,0.4);
+            ctx2d.fillRect(cannon_a,cannon_b,enemy_width,enemy_height);
+
+
+            ctx2d.fillStyle=enemy_color;
+            gametemp_fade();
 
             game_temp3();
         }
@@ -3275,10 +3601,6 @@ function init() {
             
             game_temp3();
         }
-
-
-
-
         
         if (mode==-1){ //設定画面
             game_temp4();
