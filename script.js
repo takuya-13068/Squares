@@ -11,10 +11,28 @@ var animationmax = 1; //nextmodeにうつるタイミング
 var animationcnt=0; //アニメーションのカウンター 1でスタート -1処理前
 var nextmode=0; //次にうつるモード
 
-
 // サイズを指定
 const width = 960;
 const height = 640;
+
+//sound設定
+const se_1=new Howl({
+    src: 'se1.mp3',
+    loop: false,
+    format: ['mp3'],
+});
+
+const　bgm1=new Howl({
+    src: 'Junkbox.mp3',
+    html5: true,
+    loop: true,
+    format: ['mp3'],
+    sprite: {
+        play1: [2000,83000,true],
+    },
+});
+
+var bgm1_check=true;
 
 //score関数
 var score=0;
@@ -2349,15 +2367,23 @@ function init() {
             if (space_check){ //ゲーム画面への遷移
                 fadeout();
                 if (page_check){
+                    se_1.play();
+                    if(bgm1_check){
+                        bgm1.play("play1");
+                        bgm1_check=false;
+                    }
                     mode=1;
                     space_check=false;
                     incheck=true;
                 }
-                
             }
         }
 
         if (mode==1){ //セレクト画面
+            if(bgm1_check){
+                bgm1.play("play1");
+                bgm1_check=false;
+            }
             game_temp4();
 
             
@@ -2599,12 +2625,14 @@ function init() {
                     oneup_check=false;//1upオブジェクト設定
                     loc_check=false;//save真偽りセット
                     location_chara();
+                    bgm1.stop("play1");//bgm停止
+                    bgm1_check=true;//bgm関数初期化
                 }
             }
             if (to_normal){ //normalステージへの遷移
                 fadeout();
                 if(page_check){
-                    mode=63;
+                    mode=60;
                     to_normal=false;
                     selectmode=0;
                     incheck=true;
@@ -3671,7 +3699,7 @@ function init() {
             goalarea(6);
             gamearea(6);
 
-            
+
             gametemp_fade();
             game_temp3();
         }
