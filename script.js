@@ -15,24 +15,111 @@ var nextmode=0; //次にうつるモード
 const width = 960;
 const height = 640;
 
-//sound設定
+//sound設定////////////////////////
 const se_1=new Howl({
-    src: 'se1.mp3',
+    src: 'sound/se1.mp3',
+    volume: 0.3,
     loop: false,
     format: ['mp3'],
 });
+const se_decide=new Howl({
+    src: 'sound/se_decide.wav',
+    volume: 0.4,
+    loop: false,
+    format: ['mp3'],
+});
+const se_cursor=new Howl({
+    src: 'sound/se_cursor.mp3',
+    volume: 0.7,
+    loop: false,
+    format: ['mp3'],
+});
+const se_cancel=new Howl({
+    src: 'sound/se_cancel.mp3',
+    volume: 0.7,
+    loop: false,
+    format: ['mp3'],
+});
+const se_pause=new Howl({
+    src: 'sound/se_pause.mp3',
+    volume: 0.7,
+    loop: false,
+    format: ['mp3'],
+});
+const se_stageclear=new Howl({
+    src: 'sound/se_stageclear.mp3',
+    volume: 0.7,
+    loop: false,
+    format: ['mp3'],
+});
+var se_stageclear_check=true;
+
+const se_hit=new Howl({
+    src: 'sound/se_hit.mp3',
+    volume: 0.35,
+    loop: false,
+    format: ['mp3'],
+});
+const se_save=new Howl({
+    src: 'sound/se_save.mp3',
+    volume: 0.5,
+    loop: false,
+    format: ['mp3'],
+    //license: free kurage-kosho
+});
+const se_warp=new Howl({
+    src: 'sound/se_warp.mp3',
+    volume: 0.7,
+    rate: 1.5,//再生速度
+    loop: false,
+    format: ['mp3'],
+    //license: otologic
+});
+var se_warp_check=true;
+const se_lifeup=new Howl({
+    src: 'sound/se_lifeup.mp3',
+    volume: 0.7,
+    rate: 1,//再生速度
+    loop: false,
+    format: ['mp3'],
+    //license: otologic
+});
+var se_warp_check=true;
 
 const　bgm1=new Howl({
-    src: 'Junkbox.mp3',
+    src: 'sound/Junkbox.mp3',
+    volume: 0.2,
     html5: true,
     loop: true,
     format: ['mp3'],
+    fade: (1,0,1000),
     sprite: {
-        play1: [2000,83000,true],
+        play1: [2300,83000,true],//2-86s
     },
 });
-
 var bgm1_check=true;
+
+const bgmeasy=new Howl({
+    src: 'sound/easystage.wav',
+    volume: 0.2,
+    loop: true,
+    format: ['mp3'],
+});
+var bgmeasy_check=true;
+
+const bgmnormal=new Howl({
+    src: 'sound/Hyperbolic Bloom.mp3',
+    volume: 0.2,
+    loop: true,
+    format: ['mp3'],
+    fade: (1,0,1000),//?????
+    sprite: {
+        play1: [1000,116000,true],
+    } 
+});
+var bgmnormal_check=true;
+
+/////////////////////////////////////
 
 //score関数
 var score=0;
@@ -271,6 +358,10 @@ function location_chara(){
             chara_y=270;
             warp_c=false;
         }
+        else if(loc_check){
+            chara_x=460;
+            chara_y=500;
+        }
         else{
             chara_x=180;
             chara_y=390;
@@ -338,14 +429,22 @@ function touchwall(x,y){
 function keypress(mykey,mykeycode){ //キー入力イベント
     if (mykey==" " && mode==0){ //タイトル画面のキー入力
         space_check=true;
+        se_1.play();
+        if(bgm1_check){
+            bgm1.play("play1");
+            bgm1_check=false;
+        }
+        
     }
 
     else if (mode==1){ //セレクト画面
         if (mykeycode==40 && (selectmode!=5)){
             selectmode+=1;//矢印を下に選択
+            se_cursor.play();
         }
         if (mykeycode==38 && selectmode!=0){
             selectmode-=1;//矢印を上に選択
+            se_cursor.play();
         }
         if (mykey==" "){ //spaceキー
             if (selectmode==0){ //Play画面へ
@@ -366,17 +465,20 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             if (selectmode==5){ //record画面へ
                 to_record=true;
             }
+            se_decide.play();
         }
     }
     else if (mode==-1 || mode==-2){
         if (mykey==" "){
             to_menu=true;
+            se_cancel.play();
         }
     }
 
     if(mode==5){ //record画面の操作
         if (mykey==" "){
             to_menu=true;
+            se_cancel.play();
         }
         if(mykeycode==39 && (selectmode!=1)){//右操作
             selectmode+=1;
@@ -389,9 +491,11 @@ function keypress(mykey,mykeycode){ //キー入力イベント
     else if (mode==2){ //score画面
         if (mykeycode==40 && (selectmode!=4)){
             selectmode+=1;//矢印を下に選択
+            se_cursor.play();
         }
-        if (mykeycode==38 && selectmode!=0){
+        else if (mykeycode==38 && selectmode!=0){
             selectmode-=1;//矢印を上に選択
+            se_cursor.play();
         }
         if (mykey==" "){ //spaceキー
             if (selectmode==4){ //戻る画面へ
@@ -400,14 +504,17 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             else {
                 to_game=true;
             }
+            se_decide.play();
         }    
     }
     else if (mode==3){ //storymode選択画面
         if (mykeycode==40 && (selectmode!=4)){
             selectmode+=1;//矢印を下に選択
+            se_cursor.play();
         }
-        if (mykeycode==38 && selectmode!=0){
+        else if (mykeycode==38 && selectmode!=0){
             selectmode-=1;//矢印を上に選択
+            se_cursor.play();
         }
         if (mykey==" "){ //spaceキー
             if (selectmode==0){ //easy mode
@@ -425,6 +532,7 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             else if (selectmode==4){ //戻る画面へ
                 to_menu=true;
             }
+            se_decide.play();
         }    
     }
 
@@ -432,17 +540,21 @@ function keypress(mykey,mykeycode){ //キー入力イベント
         if(clear_check){ //clear画面での操作
             if (mykeycode==39 && (selectmode!=1)){
                 selectmode+=1;//マークを下に選択
+                se_cursor.play();
             }
             if (mykeycode==37 && selectmode!=0){
                 selectmode-=1;//マークを上に選択
+                se_cursor.play();
             }
         }
         else{
             if (mykeycode==40 && (selectmode!=2)){
                 selectmode+=1;//マークを下に選択
+                se_cursor.play();
             }
             if (mykeycode==38 && selectmode!=0){
                 selectmode-=1;//マークを上に選択
+                se_cursor.play();
             }
         }
         if (mykey==" "){ //spaceキー
@@ -477,9 +589,11 @@ function keypress(mykey,mykeycode){ //キー入力イベント
     else if (mode > 9 && pause_check==true){//pause
         if (mykeycode==40 && (selectmode!=2)){
             selectmode+=1;//マークを下に選択
+            se_cursor.play();
         }
         if (mykeycode==38 && selectmode!=0){
             selectmode-=1;//マークを上に選択
+            se_cursor.play();
         }
         if (mykey==" "){ //spaceキー
             if (selectmode==0){ //次のステージ画面へ
@@ -491,87 +605,22 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             if (selectmode==2){ //タイトル画面へ
                 to_title=true;
             }
+            se_decide.play();
         }    
     }
 
     // Game中の動作
     else if(death_check==false && stage_check==false && pause_check==false && mode>9){
         if(mykeycode==39){　//右
-            /*
-            if(wall_r){//not touch
-                if(vec<=5){//速度1までの時
-                    vec+=acc;//v=at
-                }
-                vecx=vec;
-                vec_lim=3;
-                vec_check=true;//x+
-                //chara_x+=Math.min(vec,12);
-            }
-                
-            else{//touch
-                vec=3;
-                vecx=0;
-                realvecx=0;
-                vec_check=true;//x+
-            }*/
             vecx=vec;
         }
         if(mykeycode==37){
-            /*
-            if(wall_l){//not touch
-                if(vec<=5){//速度1までの時
-                    vec+=acc;
-                }
-                vecx=-vec;
-                vec_lim=-3;
-                vec_check=false;//x-
-                //chara_x-=Math.min(vec,12);
-            }
-            
-            else{//touch
-                vec=3;
-                vecx=0;
-                realvecx=0;
-                vec_check=false;//x-
-            }*/
             vecx=-vec;
         }
         if(mykeycode==38){ 
-            /*
-            if(wall_u){//not touch
-                if(vec<=5){//速度1までの時
-                    vec+=acc;
-                }
-                vecy=-vec;
-                vec_lim=-3;
-                vec_check=false;//y-
-            }
-            else{//touch
-                vec=0;
-                vecy=0;
-                realvecy=0;
-                vec_check=true;//y-
-            }*/
             vecy=-vec;
         }
         if(mykeycode==40){ 
-            /*
-            if(wall_d){//not touch
-                if(vec<=5){//速度1までの時
-                    vec+=acc;
-                }
-                vecy=vec;
-                vec_lim=3;
-                vec_check=true;//y+
-                //chara_y+=Math.min(vec,12);
-            }
-            
-            else{//touch
-                vec=0;
-                vecy=0;
-                realvecy=0;
-                vec_check=true;//y+
-            }*/
             vecy=vec;
         }
     }
@@ -579,9 +628,16 @@ function keypress(mykey,mykeycode){ //キー入力イベント
     if(mykeycode==80 && mode>9){//Pause画面の表示
         if (pause_check==false && over_c==false && stage_check==false){
             pause_check=true;
+            se_pause.play();
+            bgmeasy.volume(0.05);
+            bgmnormal.volume(0.05);
+            
         }
         else{
             pause_check=false;
+            se_cancel.play();
+            bgmeasy.volume(0.2);
+            bgmnormal.volume(0.2);
         }
     }
 }
@@ -1356,8 +1412,6 @@ function goalarea(z){
     }
 }
 
-
-
 function make_shape(a,b,c,d,e,f){ //図形作成
     //描画コンテキストの取得
     var canvas = document.getElementById('myCanvas');
@@ -1390,6 +1444,7 @@ function num_plus(){
 function death_fadeout(){
     if (death_check){
         if (check){
+            se_hit.play();//hitSE流す
             vec=3,vecx=0,vecy=0,realvecx=0,realvecy=0;
             alphacount+=100;
             check=false;
@@ -1417,10 +1472,10 @@ function death_fadeout(){
     }
 }
 
-
 ///characterギミック//////////////////
 function oneup(){//残機1増える
     if(oneup_check){
+        se_lifeup.play();//SE再生
         if(mode==60 || mode==62){
             life+=5;
         }
@@ -1437,6 +1492,7 @@ function oneup(){//残機1増える
 
 function save(){
     if(save_check){
+        se_save.play();//saveSE再生
         loc_check=true;
         realsave=false;
         save_check=false;
@@ -1454,24 +1510,39 @@ function chara_big(){
 function warp(){//ワープ
     if(mode==62){
         if(chara_x>=700 && chara_x<=740 && chara_y>=370 && chara_y<=410){
+            if(se_warp_check){
+                se_warp.play();//ワープSESE再生
+                se_warp_check=false;
+            }
             fadeout();
             if(page_check){
+                se_warp_check=true;
                 incheck=true;
                 warp_a=true;
                 location_chara();
             }
         }
         if(chara_x>=700 && chara_x<=740 && chara_y>=130 && chara_y<=170){
+            if(se_warp_check){
+                se_warp.play();//ワープSESE再生
+                se_warp_check=false;
+            }
             fadeout();
             if(page_check){
+                se_warp_check=true;
                 incheck=true;
                 warp_b=true;
                 location_chara();
             }
         }
         if(chara_x>=160 && chara_x<=200 && chara_y>=490 && chara_y<=530){
+            if(se_warp_check){
+                se_warp.play();//ワープSESE再生
+                se_warp_check=false;
+            }
             fadeout();
             if(page_check){
+                se_warp_check=true;
                 incheck=true;
                 warp_c=true;
                 location_chara();
@@ -1521,6 +1592,7 @@ function gameover(){ //story modeのゲームオーバー
         else if(mode>=80 && mode<90){
             mode=80;
         }
+        loc_check=false;//save場所リセット
         to_storyretry=false;
         selectmode=0;
         stage_check=false;
@@ -1610,6 +1682,12 @@ function next_stage(){
 }
 
 function next_stage1(){//story mode専用
+    if(se_stageclear_check){//SE設定
+        se_stageclear.play();
+        bgmeasy.volume(0.05);
+        bgmnormal.volume(0.05);
+        se_stageclear_check=false;
+    }
     t--;
     stage_check=true;
     vec=3,vecx=0,vecy=0,realvecx=0,realvecy=0;
@@ -1689,6 +1767,10 @@ function next_stage1(){//story mode専用
     }
 
     if (to_next){ //Next画面への遷移
+        se_stageclear_check=true;//SE関数リセット
+        bgmeasy.volume(0.2);//volume reset
+        bgmnormal.volume(0.2);
+
         mode++;
         to_next=false;
         selectmode=0;
@@ -1699,6 +1781,14 @@ function next_stage1(){//story mode専用
         location_chara(mode);
     }
     if (to_select){ //select画面の遷移
+        se_stageclear_check=true;//SE関数リセット
+        bgmeasy.volume(0.2);//volume reset
+        bgmnormal.volume(0.2);
+        bgmeasy.stop();
+        bgmnormal.stop();
+
+
+        se_stageclear_check=true;//SE関数リセット
         mode=3;
         to_select=false;
         selectmode=0;
@@ -1706,6 +1796,13 @@ function next_stage1(){//story mode専用
         hi_check=false;
     }
     if (to_title){ //タイトル画面への遷移
+        se_stageclear_check=true;//SE関数リセット
+        bgmeasy.volume(0.2);//volume reset
+        bgmnormal.volume(0.2); 
+        bgmeasy.stop();
+        bgmnormal.stop();
+
+        se_stageclear_check=true;//SE関数リセット
         mode=0;
         to_title=false;
         selectmode=0;
@@ -1944,7 +2041,7 @@ function storyclear(){
 function pause(){ // Pause画面
     t--;
     ctx2d.fillStyle=white_t;
-    ctx2d.fillRect(100,100,720,460);
+    ctx2d.fillRect(120,100,720,470);
     ctx2d.fillStyle=black;//
     ctx2d.font = "48px HiraMinPro-W6";
     ctx2d.fillText("Pause", 380, 190);
@@ -1969,26 +2066,43 @@ function pause(){ // Pause画面
         pause_check=false;
         loc_check=false;//save真偽りセット
         location_chara(mode);
-        t=0;
+        bgmeasy.volume(0.2);//volume戻す
+        bgmnormal.volume(0.2);//volume戻す
     }
     if (to_select){ //select画面の遷移
+        to_select=false;
+        selectmode=0;
+        pause_check=false;
+        life=Life;//残機カウントの初期化
+        if(mode>=50 && mode<=59){
+            bgmeasy.stop();//bgm停止
+            bgmeasy.volume(0.2);//volume戻す
+        }
+        if(mode>=60 && mode<=69){
+            bgmnormal.stop();//bgm停止
+            bgmnormal.volume(0.2);//volume戻す
+        }
+
+
         if (mode>9 && mode<50){
             mode=2;
         }
         else{
             mode=3;
         }
-        to_select=false;
-        selectmode=0;
-        pause_check=false;
-        life=Life;//残機カウントの初期化
     }
     if (to_title){ //タイトル画面への遷移
-        mode=0;
         to_title=false;
         selectmode=0;
         pause_check=false;
         life=Life;//残機カウントの初期化
+        if(mode>=50 && mode<=55){
+            bgmeasy.stop();//bgm停止
+        }
+        if(mode>=60 && mode<=69){
+            bgmnormal.stop();//bgm停止
+        }
+        mode=0;
     }
 }
 
@@ -2089,24 +2203,24 @@ function game_temp3(){
     var imageData = ctx2d.getImageData(chara_x-1, chara_y, 1, 1);
     var data = imageData.data;//[r,g,b,透明]の４情報
     var goala= data[0]==goalcol1_r && data[1]==goalcol1_g && data[2]==goalcol1_b;
-    var goale= data[0]==goalcol2_r && data[1]==goalcol2_g && data[2]==goalcol2_b;
+    var goalb= data[0]==goalcol2_r && data[1]==goalcol2_g && data[2]==goalcol2_b;
     imageData = ctx2d.getImageData(chara_x+chara_width+1, chara_y+chara_height, 1, 1);
     data = imageData.data;//[r,g,b,透明]の４情報
-    var goald= data[0]==goalcol1_r && data[1]==goalcol1_g && data[2]==goalcol1_b;
-    var goalh= data[0]==goalcol2_r && data[1]==goalcol2_g && data[2]==goalcol2_b;
+    var goalc= data[0]==goalcol1_r && data[1]==goalcol1_g && data[2]==goalcol1_b;
+    var goald= data[0]==goalcol2_r && data[1]==goalcol2_g && data[2]==goalcol2_b;
+    imageData = ctx2d.getImageData(chara_x+chara_width, chara_y+chara_height+1, 1, 1);
+    data = imageData.data;//[r,g,b,透明]の４情報
+    var goale= data[0]==goalcol1_r && data[1]==goalcol1_g && data[2]==goalcol1_b;
+    var goalf= data[0]==goalcol2_r && data[1]==goalcol2_g && data[2]==goalcol2_b;
     
-    if ((goala && goald) ||(goala && goalh) || (goale && goald) || (goale && goalh)) {
+    if ((goala && goalc) ||(goala && goald) || (goalb && goalc) || (goalb && goald) || (goala && goale) || (goala && goalf) || (goalb && goale) || (goalb && goalf)){
         goal_check=true;
     }
     else {
         goal_check=false;
     }
 
-/*
-    if(!wall_r && realvecx>0) realvecx=0,vecx=0;
-    if(!wall_l && realvecx<0) realvecx=0,vecx=0;
-    if(!wall_u && realvecy>0) realvecy=0,vecy=0;
-    if(!wall_d && realvecy<0) realvecy=0,vecy=0;*/
+
     
     //キャラクターの移動処理 x
     if(vecx<realvecx) {realvecx-=0.1;}//入力値よりも大きい時実際の速度を減らす
@@ -2129,41 +2243,6 @@ function game_temp3(){
         if(touchwall(chara_x, chara_y+realvecy) && touchwall(chara_x+chara_width, chara_y+realvecy)) chara_y+=Math.max(realvecy,-vec);  
     }
 
-    //wall判定
-    //wallright39
-    /*
-    if(touchwall(chara_x+chara_width+1, chara_y) && touchwall(chara_x+chara_width+1, chara_y+chara_height/2) && touchwall(chara_x+chara_width+1, chara_y+chara_height)){
-        wall_r=true;//not touch
-    }
-    else{wall_r=false;}//touch
-
-    //wallleft37
-    if(touchwall(chara_x-1, chara_y) && touchwall(chara_x-1, chara_y+chara_height/2) && touchwall(chara_x-1, chara_y+chara_height)){
-        wall_l=true;//not touch
-    }
-    else{wall_l=false;}//touch
-
-    //wallup38
-    if(touchwall(chara_x, chara_y-1) && touchwall(chara_x+chara_width/2, chara_y-1) && touchwall(chara_x+chara_width, chara_y-1)){
-        if(touchwall(chara_x, chara_y-1+realvecy) && touchwall(chara_x+chara_width/2, chara_y-1+realvecy) && touchwall(chara_x+chara_width, chara_y-1+realvecy)){
-            wall_u=true;//not touch
-        }
-        
-    }
-    else{
-        wall_u=false;
-        
-    }//touch
-    //console.log("wall_u"+wall_u+"   vecy:"+vecy);
-
-
-    //walldown40
-    if(touchwall(chara_x, chara_y+chara_height) && touchwall(chara_x+chara_width/2, chara_y+chara_height) && touchwall(chara_x+chara_width, chara_y+chara_height)){
-        wall_d=true;//not touch
-    }
-    else{wall_d=false;}//touch
-
-*/    
     //hit判定
     imagedata = ctx2d.getImageData(chara_x,chara_y,chara_width, chara_height);
     data = imagedata.data;
@@ -2229,15 +2308,36 @@ function game_temp3(){
 function game_temp4(){
     //2次元のリセット処理
     ctx2d.clearRect(0,0,width,height);
+    
+    ctx2d.fillStyle=lightgray;
+    for(let i=30; i<930; i+=120){
+        for(let j=70; j<590; j+=120){
+            ctx2d.fillRect(i,j,60,60);}
+    }
+    //画面ごとにparpleのブロックの位置を変える
+    if(mode==0){
+        ctx2d.fillStyle=pastle_parple;
+        ctx2d.fillRect(30,70,60,60);
+        ctx2d.fillRect(30+120*7,70+120*0,60,60);
+
+    }
+    else if(mode==1){
+        ctx2d.fillStyle=pastle_parple;
+        ctx2d.fillRect(30+120*1,70+120*3,60,60);
+        ctx2d.fillRect(30+120*6,70+120*1,60,60);
+    }
+    else if(mode==3){
+        ctx2d.fillStyle=pastle_parple;
+        ctx2d.fillRect(30+120*2,70+120*2,60,60);
+        ctx2d.fillRect(30+120*4,70+120*3,60,60);
+        ctx2d.fillRect(30+120*6,70+120*1,60,60);
+    }
+    
 
     ctx2d.fillStyle=black;//
     ctx2d.fillRect(30,30,900,40);
     ctx2d.fillStyle=black;//
     ctx2d.fillRect(30,590,900,70);
-
-    ctx2d.fillStyle=pastle_parple;
-    ctx2d.fillRect(canvas0_left,canvas0_top,canvas0_width,canvas0_height);
-
 }
 
 function gametemp_fade(){
@@ -2367,7 +2467,6 @@ function init() {
             if (space_check){ //ゲーム画面への遷移
                 fadeout();
                 if (page_check){
-                    se_1.play();
                     if(bgm1_check){
                         bgm1.play("play1");
                         bgm1_check=false;
@@ -2397,13 +2496,12 @@ function init() {
             ctx2d.fillText("Space: 決定", 700, 64);
 
             ctx2d.fillStyle=black;
-            ctx2d.font = "30px san-serif";
-            ctx2d.fillText("score mode", 400, 180);
-            ctx2d.fillText("story mode", 400, 240);
+            ctx2d.font = "30px san-serif 'Impact'";
+            ctx2d.fillText("Score Mode", 400, 180);
+            ctx2d.fillText("Story Mode", 400, 240);
 
             
             ctx2d.fillText("タイトルに戻る", 400, 300);
-            
             ctx2d.fillText("設定", 400, 360);
             
             ctx2d.fillText("操作方法", 400, 420);
@@ -2496,6 +2594,10 @@ function init() {
         }
 
         if (mode==2){ //stageselect画面
+            if(bgm1_check){
+                bgm1.play("play1");
+                bgm1_check=false;
+            }
             game_temp4();
 
             //ctx2d.fillStyle="rgba(0,0,0,1.0)";
@@ -2567,6 +2669,10 @@ function init() {
         }
 
         if(mode==3){ //story modeの選択画面
+            if(bgm1_check){
+                bgm1.play("play1");
+                bgm1_check=false;
+            }
             game_temp4();
             
             ctx2d.fillStyle=white;
@@ -2580,9 +2686,9 @@ function init() {
 
             ctx2d.fillStyle=black;
             ctx2d.font = "30px san-serif";
-            ctx2d.fillText("easy", 400, 180);
-            ctx2d.fillText("normal", 400, 280);
-            ctx2d.fillText("hard", 400, 380);
+            ctx2d.fillText("Easy", 400, 180);
+            ctx2d.fillText("Normal", 400, 280);
+            ctx2d.fillText("Hard", 400, 380);
             ctx2d.fillText("????", 400, 480);
             ctx2d.fillText("Menuに戻る", 400, 580);
 
@@ -2625,20 +2731,24 @@ function init() {
                     oneup_check=false;//1upオブジェクト設定
                     loc_check=false;//save真偽りセット
                     location_chara();
-                    bgm1.stop("play1");//bgm停止
+                    bgm1.stop();//bgm停止
                     bgm1_check=true;//bgm関数初期化
+                    bgmeasy.play();//easybgm開始
                 }
             }
             if (to_normal){ //normalステージへの遷移
                 fadeout();
                 if(page_check){
-                    mode=60;
+                    mode=63;
                     to_normal=false;
                     selectmode=0;
                     incheck=true;
                     oneup_check=false;//1upオブジェクト設定
                     loc_check=false;//save真偽りセット
                     location_chara();
+                    bgm1.stop();//bgm停止
+                    bgm1_check=true;//bgm関数初期化
+                    bgmnormal.play("play1");//normalbgm再生
                 }
             }
             if (to_hard){ //hardステージへの遷移
@@ -2651,6 +2761,8 @@ function init() {
                     oneup_check=false;//1upオブジェクト設定
                     loc_check=false;//save真偽りセット
                     location_chara();
+                    bgm1.stop();//bgm停止
+                    bgm1_check=true;//bgm関数初期化
                 }
             }
             if (to_extrahard){ //extrahardへの遷移
@@ -2663,6 +2775,8 @@ function init() {
                     oneup_check=false;//1upオブジェクト設定
                     loc_check=false;//save真偽りセット
                     location_chara();
+                    bgm1.stop();//bgm停止
+                    bgm1_check=true;//bgm関数初期化
                 }
             }
             if (to_menu){ //タイトル画面への遷移
@@ -3302,7 +3416,7 @@ function init() {
             ctx2d.fillRect(300,400,100,20);
             ctx2d.fillRect(550,240,90,20);
 
-            //1up
+            //lifeup
             if(realoneup){
                 ctx2d.fillStyle=oneupcol;
                 ctx2d.fillRect(170,490,enemy_width,enemy_height);
@@ -3402,7 +3516,7 @@ function init() {
             ctx2d.fillRect(310,430,320,10);
             ctx2d.fillRect(310,380,10,60);
 
-            //1up
+            //lifeup
             if(realoneup){
                 ctx2d.fillStyle=oneupcol;
                 ctx2d.fillRect(800,510,30,30);
@@ -3544,7 +3658,7 @@ function init() {
             ctx2d.fillRect(140,430,640,10);
             ctx2d.fillRect(140,550,640,10);
 
-            //1up
+            //lifeup
             if(realoneup){
                 ctx2d.fillStyle=oneupcol;
                 ctx2d.fillRect(565,160,30,30);
@@ -3625,7 +3739,7 @@ function init() {
             ctx2d.fillRect(140,360,510,10);
             ctx2d.fillRect(140,550,670,10);
 
-            //1up
+            //lifeup
             if(realoneup){
                 ctx2d.fillStyle=oneupcol;
                 ctx2d.fillRect(725,520,30,30);
@@ -3646,10 +3760,13 @@ function init() {
             //enemy static
             ctx2d.fillStyle=enemycol2;
             ctx2d.fillRect(360,130,110,20);
+            ctx2d.fillRect(550,190,40,20);
             ctx2d.fillRect(760,480,40,20);
             ctx2d.fillRect(430,420,20,80);
             ctx2d.fillRect(290,370,10,40);
             ctx2d.fillRect(290,510,10,40);
+            ctx2d.fillRect(660,330,40,10);
+            ctx2d.fillRect(760,330,40,10);
 
             
             //enemy move
