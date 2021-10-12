@@ -47,9 +47,10 @@ var se_storyclear_check=true;
 
 const se_hit=new Howl({
     src: 'sound/se_hit.mp3',
-    volume: 0.35,
+    volume: 0.5,
     loop: false,
     format: ['mp3'],
+    //license: free kurage-kosho
 });
 const se_save=new Howl({
     src: 'sound/se_save.mp3',
