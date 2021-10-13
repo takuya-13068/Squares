@@ -86,7 +86,7 @@ const　bgm1=new Howl({
     format: ['mp3'],
     fade: (1,0,1000),
     sprite: {
-        play1: [2300,83000,true],//2-86s
+        play1: [2300,82500,true],//2-86s
     },
 });
 var bgm1_check=true;
