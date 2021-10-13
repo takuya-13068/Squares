@@ -77,6 +77,7 @@ const pastle_parple_z="rgba(221,188,255,0.8)";
 const startcol_1="rgba(204,204,255,1.0)";
 const startcol_2="rgba(153,204,255,1.0)";
 const clear_col1="rgba(255,213,128,0.93)";
+const red_light="rgba(220,20,60,0.95)";
 
 const enemy_color = "rgba(150,0,0,1.0)";
 const enemycolor_r = 150;
@@ -106,6 +107,11 @@ var savecolr=51;
 var savecolg=190;
 var savecolb=179;
 
+//-1設定画面
+var bgm_cnt=false;
+var se_cnt=false;
+var data_reset=false;
+
 //0タイトル画面canvas情報
 var space_check=false;//spaceキー判定
 var canvas0_left=30;
@@ -115,7 +121,6 @@ var canvas0_height=520;
 
 var transcount=100;
 var transcheck=true;
-
 
 //1menu画面
 var selectmode=0;
@@ -342,7 +347,6 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             bgm1.play("play1");
             bgm1_check=false;
         }
-        
     }
 
     else if (mode==1){ //セレクト画面
@@ -376,11 +380,34 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             se_decide.play();
         }
     }
-    else if (mode==-1 || mode==-2){
+
+    else if (mode==-1){//設定画面
+        if (mykeycode==40 && (selectmode!=3)){
+            selectmode+=1;//矢印を下に選択
+            se_cursor.play();}
+        if (mykeycode==38 && selectmode!=0){
+            selectmode-=1;//矢印を上に選択
+            se_cursor.play();}
+        if (mykey==" "){ //spaceキー
+            if (selectmode==0){ //Play画面へ
+                bgm_cnt=true;}
+            if (selectmode==1){ //story画面へ
+                se_cnt=true;}
+            if (selectmode==2){ //タイトル画面へ
+                data_reset=true;}
+            if (selectmode==3){ //menu画面へ
+                to_menu=true;}
+            se_decide.play();
+        }
+    }
+
+
+    else if (mode==-2){//操作方法画面
         if (mykey==" "){
             to_menu=true;
             se_cancel.play();
         }
+        
     }
 
     if(mode==5){ //record画面の操作
@@ -1547,7 +1574,7 @@ function next_stage(){
     stage_check=true;
     vec=3,vecx=0,vecy=0,realvecx=0,realvecy=0;
     ctx2d.fillStyle=pastle_parple_z;
-    ctx2d.fillRect(100,100,720,500);
+    ctx2d.fillRect(100,100,720,480);
     ctx2d.fillStyle=black;//
     ctx2d.font = "48px HiraMinPro-W6";
     ctx2d.fillText("You're GOAL!!", 300, 190);
@@ -1609,7 +1636,7 @@ function next_stage1(){//story mode専用
     stage_check=true;
     vec=3,vecx=0,vecy=0,realvecx=0,realvecy=0;
     ctx2d.fillStyle=clear_col1;
-    ctx2d.fillRect(100,90,720,500);
+    ctx2d.fillRect(100,90,720,480);
 
     ctx2d.fillStyle=black;
     ctx2d.font = "56px san-serif";
@@ -1684,18 +1711,22 @@ function next_stage1(){//story mode専用
     }
 
     if (to_next){ //Next画面への遷移
-        se_stageclear_check=true;//SE関数リセット
-        bgmeasy.volume(0.2);//volume reset
-        bgmnormal.volume(0.2);
+        
+            se_stageclear_check=true;//SE関数リセット
+            bgmeasy.volume(0.2);//volume reset
+            bgmnormal.volume(0.2);
 
-        mode++;
-        to_next=false;
-        selectmode=0;
-        stage_check=false;
-        hi_check=false;
-        oneup_check=false;//1upオブジェクト設定
-        loc_check=false;//save真偽りセット
-        location_chara(mode);
+            mode++;
+            to_next=false;
+            selectmode=0;
+            stage_check=false;
+            hi_check=false;
+            oneup_check=false;//1upオブジェクト設定
+            loc_check=false;//save真偽りセット
+            location_chara(mode);
+            incheck=true;
+        
+        
     }
     if (to_select){ //select画面の遷移
         se_stageclear_check=true;//SE関数リセット
@@ -1786,7 +1817,7 @@ function storyclear(){
         score_set();
     }
     ctx2d.fillStyle=clear_col1;
-    ctx2d.fillRect(100,90,720,500);
+    ctx2d.fillRect(100,90,720,480);
     ctx2d.fillStyle=black;//
     ctx2d.font = "56px san-serif";
     ctx2d.fillText("Congraduation!", 270, 180);
@@ -2224,7 +2255,7 @@ function game_temp3(){
                 storyclear();
             }
             else{
-                next_stage1(mode);
+                next_stage1();
             }
         }
     }
@@ -3191,8 +3222,7 @@ function init() {
                 }
             }
             
-            
-            
+            gametemp_fade();
 
             game_temp3();
         }
@@ -3214,6 +3244,7 @@ function init() {
             ctx2d.fillRect(580,enemy_motion3(330,60,30,0),enemy_width,enemy_height);
             ctx2d.fillRect(620,enemy_motion3(330,130,20,0),enemy_width,enemy_height);
 
+            gametemp_fade();
             
             game_temp3();
         }
@@ -3827,6 +3858,56 @@ function init() {
             ctx2d.font = "24px";
             ctx2d.fillText("Space: Menu画面へ", 60, 628);
 
+            ctx2d.font = "32px san-serif";
+            ctx2d.fillStyle=black;
+            var config_textx=220;
+            ctx2d.fillText("BGM ボリューム", config_textx, 200);
+            ctx2d.fillText("SE ボリューム", config_textx, 300);
+            ctx2d.fillText("データ初期化", config_textx, 400);
+            ctx2d.fillText("Menuに戻る", config_textx, 500);
+
+            if (selectmode==0){
+                make_shape(200,187,160,197,160,137); //三角形描画
+            }
+            if (selectmode==1){
+                make_shape(200,287,160,317,160,257); //三角形描画
+            } 
+            else if(selectmode==2){
+                make_shape(200,387,160,417,160,357); //三角形描画
+            }
+            else if(selectmode==3){
+                make_shape(200,487,160,517,160,457); //三角形描画
+            }
+            ctx2d.fillStyle=black;
+            ctx2d.font = "32px san-serif";
+            //bgm
+            ctx2d.fillText("0", 550, 200);
+            ctx2d.fillText("1", 650, 200);
+            ctx2d.fillText("2", 750, 200);
+            ctx2d.fillText("3", 850, 200);
+            ctx2d.fillRect(587,185,50,4);
+            ctx2d.fillRect(687,185,50,4);
+            ctx2d.fillRect(787,185,50,4);
+
+            //se
+            ctx2d.fillText("0", 550, 300);
+            ctx2d.fillText("1", 650, 300);
+            ctx2d.fillText("2", 750, 300);
+            ctx2d.fillText("3", 850, 300);
+            ctx2d.fillRect(587,285,50,4);
+            ctx2d.fillRect(687,285,50,4);
+            ctx2d.fillRect(787,285,50,4);
+
+            if (bgm_cnt){
+            }
+            else if (se_cnt){
+
+            }
+            else if (data_reset){
+                ctx2d.fillStyle=red_light;
+                ctx2d.fillRect(100,90,720,480);
+            }
+
             gametemp_fade();
 
             if (to_menu){ //タイトル画面への遷移
@@ -3835,9 +3916,8 @@ function init() {
                     mode=1;
                     to_menu=false;
                     selectmode=0;
-                    incheck=true;    
+                    incheck=true;  
                 }
-                
             }
         }
 
