@@ -64,7 +64,9 @@ const gray="rgba(128,128,128,1.0)";
 const lightgray="rgba(230,230,230,1.0)";
 const skyblue="rgba(102,204,204,1.0)";
 const deepskyblue="rgba(0,191,255,1.0)";
-const blue="rgba(178,178,255,1.0)";
+const blue="rgba(0,0,255,1.0)";
+const red="rgba(255,0,0,1.0)";
+const lightgreen="rgba(0,255,0,1.0)";
 const yellow_green="rgba(154, 205, 50,1.0)";
 const yellow_green_t="rgba(154, 205, 50,0.6)";
 const yellow_thick="rgba(237,208,23)";
@@ -204,6 +206,9 @@ var enealphacount4=0;
 var check4=true;
 var t_4;
 
+//mode65
+var pass1=false;
+
 //壁[左端のx, 左端のy, 横幅,縦幅]
 var wall=[[30,60,10,80],[40,50,360,10],[40,140,250,10],[290,140,10,300],[400,60,10,320],[410,370,100,10],[510,380,10,60],[300,440,210,10]];
 var wall1=[[140,200,20,280],[140,180,680,20],[140,480,680,20],[800,200,20,280]];
@@ -289,6 +294,18 @@ function location_chara(){
         else{
             chara_x=220;
             chara_y=160;
+            chara_width=20;
+            chara_height=20;
+        }
+    }
+    else if(mode==65){
+        if(loc_check){
+            chara_x=410;
+            chara_y=150;
+        }
+        else{
+            chara_x=80;
+            chara_y=120;
             chara_width=20;
             chara_height=20;
         }
@@ -1264,6 +1281,22 @@ function gamearea(z){
         }
 
     }
+    if(z==6){
+        ctx2d.fillStyle=white;
+        for(let i=70; i<900; i+=40){
+            for(let j=110; j<531; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=90; i<900; i+=40){
+            for(let j=130; j<531; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        ctx2d.fillStyle=lightgray;
+        for(let i=90; i<900; i+=40){
+            for(let j=110; j<531; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=70; i<900; i+=40){
+            for(let j=130; j<531; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+    }
 }
 
 function goalarea(z){
@@ -1382,6 +1415,7 @@ function make_shape(a,b,c,d,e,f){ //図形作成
     //描画コンテキストの取得
     var canvas = document.getElementById('myCanvas');
     if (canvas.getContext) {
+        ctx2d.strokeStyle=black;
         var context = canvas.getContext('2d');
         //ここに具体的な描画内容を指定する
         //新しいパスを開始する
@@ -1570,6 +1604,12 @@ function gameover(){ //story modeのゲームオーバー
         life=Life;//残機カウントの初期化
     }
     if (to_story){ //story mode画面の遷移
+        se_stageclear_check=true;//SE関数リセット
+        bgmeasy.volume(0.2);//volume reset
+        bgmnormal.volume(0.2);
+        bgmeasy.stop();
+        bgmnormal.stop();
+
         mode=3;
         to_story=false;
         selectmode=0;
@@ -1580,6 +1620,12 @@ function gameover(){ //story modeのゲームオーバー
         life=Life;//残機カウントの初期化
     }
     if (to_title){ //タイトル画面への遷移
+        se_stageclear_check=true;//SE関数リセット
+        bgmeasy.volume(0.2);//volume reset
+        bgmnormal.volume(0.2);
+        bgmeasy.stop();
+        bgmnormal.stop();
+
         mode=0;
         to_title=false;
         selectmode=0;
@@ -2096,7 +2142,6 @@ function pause(){ // Pause画面
 }
 
 
-
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
@@ -2117,15 +2162,25 @@ function game_temp1(x){
     }
 
     else if(mode>=50 && mode<60){//easy mode
-        ctx2d.fillText("Easy No."+x, 60, 64);
+        ctx2d.fillText("Easy: "+x+"/6", 60, 64);
+
         ctx2d.font = "28px san-serif";
-        ctx2d.fillStyle=blue;
-        ctx2d.fillText("Life: "+life, 545, 64);
+        ctx2d.lineWidth = "4";
+        ctx2d.lineJoin = "miter";
+        ctx2d.miterLimit = "4"
+        ctx2d.strokeStyle=white;
+        ctx2d.strokeText("Life: "+life, 535, 64);
+        ctx2d.font = "28px san-serif"; 
+
+        if(life>Math.floor(Life/2)){ctx2d.fillStyle=blue;}
+        else if(life>Math.floor(Life/5)){ctx2d.fillStyle=lightgreen;}
+        else {ctx2d.fillStyle=red;}
+        ctx2d.fillText("Life: "+life, 535, 64);
         ctx2d.fillStyle=white;
         ctx2d.fillText("残り時間: "+Math.floor((36000-t)/3600)+"m"+Math.floor((36000-t/60)%60)+"s", 685, 64);
     }
     else if(mode>=60 && mode<70){//normal mode
-        ctx2d.fillText("Normal No."+x, 60, 64);
+        ctx2d.fillText("Normal: "+x+"/8", 60, 64);
         ctx2d.font = "28px san-serif";
         ctx2d.fillStyle=blue;
         ctx2d.fillText("Life: "+life, 545, 64);
@@ -2359,7 +2414,6 @@ function init() {
     ctx2d.width = width;
     ctx2d.height = height;
 
-    
     tick();
 
     function tick() {
@@ -2720,7 +2774,7 @@ function init() {
             if (to_normal){ //normalステージへの遷移
                 fadeout();
                 if(page_check){
-                    mode=60;
+                    mode=65;
                     to_normal=false;
                     selectmode=0;
                     incheck=true;
@@ -3841,8 +3895,72 @@ function init() {
             
             game_temp3();
         }
-        if(mode==65){//normal6
+        if(mode==65){//normal6　迷路
+            game_temp4();
+            game_temp1(6);
+            /*
+            startarea(2);
+            goalarea(2);*/
+            gamearea(6);
 
+            //character
+            ctx2d.fillStyle="rgba(0,0,255,"+chara_alpha+")";
+            ctx2d.fillRect(chara_x,chara_y,chara_width,chara_height);
+
+            //wall////////////////////////////////
+            ctx2d.fillStyle=black;
+            ctx2d.fillRect(60,200,10,350);
+            ctx2d.fillRect(900,200,10,350);
+            ctx2d.fillRect(470,100,10,350);
+            ctx2d.fillRect(60,540,850,10);
+            ctx2d.fillRect(250,100,460,10);
+            ctx2d.fillRect(60,200,70,10);
+            ctx2d.fillRect(180,200,80,10);
+            ctx2d.fillRect(60,100,10,60);
+            ctx2d.fillRect(60,100,120,10);
+            ctx2d.fillRect(170,100,10,110);
+            ctx2d.fillRect(60,150,70,10);
+            ctx2d.fillRect(120,150,10,60);
+            ctx2d.fillRect(240,100,10,110);
+            ctx2d.fillRect(60,380,360,10);
+
+            if(pass1==false){
+                ctx2d.fillStyle=deepskyblue;
+                ctx2d.fillRect(420,380,50,10);}
+
+            //enemy1 static
+            ctx2d.fillStyle=enemycol2;
+            ctx2d.fillRect(420,140,50,10);
+            ctx2d.fillRect(460,140,10,90);
+            ctx2d.fillRect(420,180,10,90);
+            ctx2d.fillRect(380,180,50,10);
+            ctx2d.fillRect(290,140,100,10);
+            ctx2d.fillRect(260,180,90,10);
+            ctx2d.fillRect(250,180,10,70);
+            ctx2d.fillRect(170,210,10,40);
+            ctx2d.fillRect(140,240,10,70);
+            ctx2d.fillRect(140,240,40,10);
+            ctx2d.fillRect(100,240,10,110);
+            ctx2d.fillRect(100,340,200,10);
+            ctx2d.fillRect(290,220,100,10);
+            ctx2d.fillRect(290,220,10,130);
+            ctx2d.fillRect(330,260,110,10);
+            ctx2d.fillRect(330,260,10,90);
+            ctx2d.fillRect(330,340,50,10);
+            ctx2d.fillRect(370,300,50,10);
+            ctx2d.fillRect(410,300,10,80);
+            ctx2d.fillRect(380,140,10,90);
+
+            //enemy1 motion
+            ctx2d.fillStyle=enemy_color;
+            ctx2d.fillRect(enemy_motion1(210,30,40,0),250,10,90);///u
+            ctx2d.fillRect(enemy_motion1(440,20,36,0.8),260,10,80);///u
+
+            //タッチ処理
+            if(chara_x>=430 && chara_x<=451 && chara_y>=110 && chara_y<=121){//blue解除
+                pass1=true;}
+
+            game_temp3();
         }
 
         if(mode==70){ //hard1
