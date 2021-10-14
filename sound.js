@@ -1,7 +1,7 @@
 //sound設定////////////////////////
 const se_1=new Howl({
     src: 'sound/se1.mp3',
-    volume: 0.3,
+    volume: 0.24,
     loop: false,
     format: ['mp3'],
 });
@@ -47,7 +47,7 @@ var se_storyclear_check=true;
 
 const se_hit=new Howl({
     src: 'sound/se_hit.mp3',
-    volume: 0.5,
+    volume: 0.6,
     loop: false,
     format: ['mp3'],
     //license: free kurage-kosho
