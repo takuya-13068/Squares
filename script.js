@@ -1310,18 +1310,59 @@ function gamearea(z){
     if(z==6){
         ctx2d.fillStyle=white;
         for(let i=70; i<880; i+=40){
-            for(let j=110; j<531; j+=40){
+            for(let j=210; j<531; j+=40){
                 ctx2d.fillRect(i,j,20,20);}}
         for(let i=90; i<880; i+=40){
-            for(let j=130; j<531; j+=40){
+            for(let j=230; j<531; j+=40){
                 ctx2d.fillRect(i,j,20,20);}}
+        for(let i=250; i<700; i+=40){
+            for(let j=110; j<230; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=270; i<700; i+=40){
+            for(let j=130; j<230; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        ctx2d.fillRect(110,130,20,20);
+        for(let i=130; i<151; i+=40){
+            for(let j=110; j<210; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=150; i<151; i+=40){
+            for(let j=130; j<210; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=810; i<811; i+=40){
+            for(let j=110; j<210; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=790; i<811; i+=40){
+            for(let j=130; j<210; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        ctx2d.fillRect(830,130,20,20);
+
         ctx2d.fillStyle=lightgray;
         for(let i=90; i<880; i+=40){
-            for(let j=110; j<531; j+=40){
+            for(let j=210; j<531; j+=40){
                 ctx2d.fillRect(i,j,20,20);}}
         for(let i=70; i<880; i+=40){
-            for(let j=130; j<531; j+=40){
+            for(let j=230; j<531; j+=40){
                 ctx2d.fillRect(i,j,20,20);}}
+        for(let i=270; i<700; i+=40){
+            for(let j=110; j<230; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=250; i<700; i+=40){
+            for(let j=130; j<230; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        ctx2d.fillRect(110,110,20,20);
+        for(let i=150; i<151; i+=40){
+            for(let j=110; j<210; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=130; i<151; i+=40){
+            for(let j=130; j<210; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=790; i<811; i+=40){
+            for(let j=110; j<210; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=810; i<811; i+=40){
+            for(let j=130; j<210; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        ctx2d.fillRect(830,110,20,20);
     }
 }
 
@@ -2413,6 +2454,21 @@ function game_temp4(){
         ctx2d.fillRect(30+120*2,70+120*2,60,60);
         ctx2d.fillRect(30+120*4,70+120*3,60,60);
         ctx2d.fillRect(30+120*6,70+120*1,60,60);
+    }
+
+    else if(mode==65){
+        ctx2d.fillStyle=pastle_parple;
+        for(let i=30; i<930; i+=240){
+            for(let j=70; j<590; j+=240){
+                ctx2d.fillRect(i,j,60,60);}}
+    }
+
+    else if(mode>=60 && mode<70){
+        ctx2d.fillStyle=pastle_parple;
+        ctx2d.fillRect(30+120*0,70+120*3,60,60);
+        ctx2d.fillRect(30+120*5,70+120*3,60,60);
+        ctx2d.fillRect(30+120*4,70+120*0,60,60);
+        ctx2d.fillRect(30+120*1,70+120*0,60,60);
     }
     
 
@@ -4050,11 +4106,8 @@ function init() {
             //enemy1 motion
             ctx2d.fillStyle=enemy_color;
             ctx2d.fillRect(enemy_motion1(210,60,40,0),250,10,90);///u
-            ctx2d.fillRect(enemy_motion1(440,20,36,0.8),260,10,80);///u
-
+            ctx2d.fillRect(enemy_motion1(440,20,36,0.8),260,10,80);//u
             
-            
-
             if(pass1==true){
                 //enemy2 static
                 ctx2d.fillStyle=enemycol2;
@@ -4077,8 +4130,7 @@ function init() {
                 ctx2d.fillRect(enemy_motion1(140,30,-30,0),460,10,40);}
             else {
                 ctx2d.fillStyle=black;
-                ctx2d.fillRect(70,390,410,150);
-            }
+                ctx2d.fillRect(70,390,410,150);}
             if(pass2==true){
                 //enemy3 static
                 ctx2d.fillStyle=enemycol2;
@@ -4138,8 +4190,7 @@ function init() {
                 ctx2d.fillStyle=black;
                 ctx2d.fillRect(480,210,410,330);
                 ctx2d.fillRect(480,110,230,100);
-                ctx2d.fillRect(790,150,40,60);
-            }
+                ctx2d.fillRect(790,150,40,60);}
             
 
 
