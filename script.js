@@ -63,10 +63,8 @@ const white_t="rgba(255,255,255,0.8)";
 const gray="rgba(128,128,128,1.0)";
 const lightgray="rgba(230,230,230,1.0)";
 const skyblue="rgba(102,204,204,1.0)";
-const deepskyblue="rgba(0,191,255,1.0)";
 const blue="rgba(0,0,255,1.0)";
 const red="rgba(255,0,0,1.0)";
-const lightgreen="rgba(0,255,0,1.0)";
 const yellow_green="rgba(154, 205, 50,1.0)";
 const yellow_green_t="rgba(154, 205, 50,0.6)";
 const yellow_thick="rgba(237,208,23)";
@@ -77,6 +75,15 @@ const startcol_1="rgba(204,204,255,1.0)";
 const startcol_2="rgba(153,204,255,1.0)";
 const clear_col1="rgba(255,213,128,0.93)";
 const red_light="rgba(240,120,120,0.98)";
+const deepskyblue="rgba(0,191,255,1.0)";
+const lightgreen="rgba(0,255,0,1.0)";
+const parple="rgba(200,95,204,1.0)";
+const bronze="rgba(137,87,37,1.0)";
+const deepskyblue2="rgba(0,192,255,1.0)";
+const lightgreen2="rgba(0,254,0,1.0)";
+const parple2="rgba(200,96,204,1.0)";
+const bronze2="rgba(137,88,37,1.0)";
+
 
 const enemy_color = "rgba(150,0,0,1.0)";
 const enemycolor_r = 150;
@@ -124,7 +131,7 @@ var transcount=100;
 var transcheck=true;
 
 //1menu画面
-var selectmode=0;
+var selectmode=1;
 var to_play=false;
 var to_story=false;
 var to_title=false;
@@ -207,7 +214,7 @@ var check4=true;
 var t_4;
 
 //mode65
-var pass1=false;
+var pass1=false, pass2=false, pass3=false, pass4=false;
 
 //壁[左端のx, 左端のy, 横幅,縦幅]
 var wall=[[30,60,10,80],[40,50,360,10],[40,140,250,10],[290,140,10,300],[400,60,10,320],[410,370,100,10],[510,380,10,60],[300,440,210,10]];
@@ -300,8 +307,8 @@ function location_chara(){
     }
     else if(mode==65){
         if(loc_check){
-            chara_x=410;
-            chara_y=150;
+            chara_x=480;
+            chara_y=470;
         }
         else{
             chara_x=80;
@@ -347,12 +354,22 @@ function text_ani(x,y,z){
 function touchwall(x,y){
     var imageData = ctx2d.getImageData(x, y, 1, 1);
     var data = imageData.data;//[r,g,b,透明]の４情報
-    if (data[0]==0 && data[1]==0 && data[2]==0) {
-        return 0;//壁に当たっている時
-    }
-    else {
-        return 1;//壁に当たってない時
-    }
+    if(mode==65){
+        var a = data[0]==0 && data[1]==0 && data[2]==0;//black
+        var b = data[0]==0 && data[1]==255 && data[2]==0;//pass2 lightgreen
+        var c = data[0]==200 && data[1]==95 && data[2]==204;//pass3 parple
+        var d = data[0]==137 && data[1]==87 && data[2]==37;//pass4 bronze
+        var e = data[0]==0 && data[1]==191 && data[2]==255;//pass1 deepskyblue
+        if(a || b || c || d || e){
+            return 0;}
+        else{
+            return 1;}}
+    else{
+        if (data[0]==0 && data[1]==0 && data[2]==0) {//壁に当たっている時
+            return 0;}
+        else {//壁に当たってない時
+            return 1;}}
+    
 }
 
 function keypress(mykey,mykeycode){ //キー入力イベント
@@ -933,6 +950,15 @@ function startarea(z){
                 ctx2d.fillRect(i,j,20,20);}
         }
     }
+    if(z==6){
+        ctx2d.fillStyle=startcol_1;
+        ctx2d.fillRect(70,110,20,20);
+        ctx2d.fillRect(90,130,20,20);
+        
+        ctx2d.fillStyle=startcol_2;
+        ctx2d.fillRect(90,110,20,20);
+        ctx2d.fillRect(70,130,20,20);
+    }
 }
 
 function gamearea(z){
@@ -1283,17 +1309,17 @@ function gamearea(z){
     }
     if(z==6){
         ctx2d.fillStyle=white;
-        for(let i=70; i<900; i+=40){
+        for(let i=70; i<880; i+=40){
             for(let j=110; j<531; j+=40){
                 ctx2d.fillRect(i,j,20,20);}}
-        for(let i=90; i<900; i+=40){
+        for(let i=90; i<880; i+=40){
             for(let j=130; j<531; j+=40){
                 ctx2d.fillRect(i,j,20,20);}}
         ctx2d.fillStyle=lightgray;
-        for(let i=90; i<900; i+=40){
+        for(let i=90; i<880; i+=40){
             for(let j=110; j<531; j+=40){
                 ctx2d.fillRect(i,j,20,20);}}
-        for(let i=70; i<900; i+=40){
+        for(let i=70; i<880; i+=40){
             for(let j=130; j<531; j+=40){
                 ctx2d.fillRect(i,j,20,20);}}
     }
@@ -1409,6 +1435,15 @@ function goalarea(z){
                 ctx2d.fillRect(i,j,20,20);}
         }
     }
+    if(z==6){
+        ctx2d.fillStyle=goalcol1;
+        ctx2d.fillRect(850,110,20,20);
+        ctx2d.fillRect(870,130,20,20);
+        ctx2d.fillStyle=goalcol2;
+        ctx2d.fillRect(850,130,20,20);
+        ctx2d.fillRect(870,110,20,20);
+        
+    }
 }
 
 function make_shape(a,b,c,d,e,f){ //図形作成
@@ -1479,7 +1514,7 @@ function oneup(){//残機1増える
         if(mode==60 || mode==62){
             life+=5;
         }
-        else if(mode==61 || mode==63){
+        else if(mode==61 || mode==63 || mode==65){
             life+=10;
         }
         else{
@@ -2181,9 +2216,19 @@ function game_temp1(x){
     }
     else if(mode>=60 && mode<70){//normal mode
         ctx2d.fillText("Normal: "+x+"/8", 60, 64);
+
         ctx2d.font = "28px san-serif";
-        ctx2d.fillStyle=blue;
-        ctx2d.fillText("Life: "+life, 545, 64);
+        ctx2d.lineWidth = "4";
+        ctx2d.lineJoin = "miter";
+        ctx2d.miterLimit = "4"
+        ctx2d.strokeStyle=white;
+        ctx2d.strokeText("Life: "+life, 535, 64);
+        ctx2d.font = "28px san-serif"; 
+
+        if(life>Math.floor(Life/2)){ctx2d.fillStyle=blue;}
+        else if(life>Math.floor(Life/5)){ctx2d.fillStyle=lightgreen;}
+        else {ctx2d.fillStyle=red;}
+        ctx2d.fillText("Life: "+life, 535, 64);
         ctx2d.fillStyle=white;
         ctx2d.fillText("残り時間: "+Math.floor((36000-t)/3600)+"m"+Math.floor((36000-t/60)%60)+"s", 685, 64);
     }
@@ -2206,8 +2251,6 @@ function game_temp1(x){
 }
 
 function game_temp2(){ //序盤ゲーム配置easy専用
-
-
     //fieldarea1
     gamearea(1);
     //startarea
@@ -2419,62 +2462,62 @@ function init() {
     function tick() {
         //dataの管理
         if(localStorage.getItem('Check')==undefined){
-        //初期化の処理
+            //初期化の処理
 
-        //ユーザー名
-        localStorage.setItem('user', 'none');
+            //ユーザー名
+            localStorage.setItem('user', 'none');
 
-        //ステージ達成状況Easy,Normal,Hard,Exhard:
-        //A(ステージ攻略数,0-10)  B(最高スコア,0-)  C(ランク6-1(S-E),0(z))
-        localStorage.setItem('easy_a', '0');
-        localStorage.setItem('easy_b', '0');
-        localStorage.setItem('easy_c', '0');
+            //ステージ達成状況Easy,Normal,Hard,Exhard:
+            //A(ステージ攻略数,0-10)  B(最高スコア,0-)  C(ランク6-1(S-E),0(z))
+            localStorage.setItem('easy_a', '0');
+            localStorage.setItem('easy_b', '0');
+            localStorage.setItem('easy_c', '0');
 
-        localStorage.setItem('normal_a', '0');
-        localStorage.setItem('normal_b', '0');
-        localStorage.setItem('normal_c', '0');
+            localStorage.setItem('normal_a', '0');
+            localStorage.setItem('normal_b', '0');
+            localStorage.setItem('normal_c', '0');
 
-        localStorage.setItem('hard_a', '0');
-        localStorage.setItem('hard_b', '0');
-        localStorage.setItem('hard_c', '0');
+            localStorage.setItem('hard_a', '0');
+            localStorage.setItem('hard_b', '0');
+            localStorage.setItem('hard_c', '0');
 
-        localStorage.setItem('exhard_a', '0');
-        localStorage.setItem('exhard_b', '0');
-        localStorage.setItem('exhard_c', '0');
+            localStorage.setItem('exhard_a', '0');
+            localStorage.setItem('exhard_b', '0');
+            localStorage.setItem('exhard_c', '0');
 
-        //称号clear:ステージクリア(unclear-clear)
-        localStorage.setItem('A_clear_easy', 'unclear');
-        localStorage.setItem('A_clear_normal', 'unclear');
-        localStorage.setItem('A_clear_hard', 'unclear');
-        localStorage.setItem('A_clear_exhard', 'unclear');
+            //称号clear:ステージクリア(unclear-clear)
+            localStorage.setItem('A_clear_easy', 'unclear');
+            localStorage.setItem('A_clear_normal', 'unclear');
+            localStorage.setItem('A_clear_hard', 'unclear');
+            localStorage.setItem('A_clear_exhard', 'unclear');
 
-        //称号allclear:easy-hardまで全てクリア
-        localStorage.setItem('A_allclear', 'unclear');
+            //称号allclear:easy-hardまで全てクリア
+            localStorage.setItem('A_allclear', 'unclear');
 
-        //称号rank:S,Aのランク(unclear-clear)
-        //Cを使えばいいから必要ない
+            //称号rank:S,Aのランク(unclear-clear)
+            //Cを使えばいいから必要ない
 
 
-        //称号life: 1回も死なずにクリアできた
-        localStorage.setItem('A_life_easy', 'unclear');
-        localStorage.setItem('A_life_normal', 'unclear');
-        localStorage.setItem('A_life_hard', 'unclear');
-        localStorage.setItem('A_life_exhard', 'unclear');
+            //称号life: 1回も死なずにクリアできた
+            localStorage.setItem('A_life_easy', 'unclear');
+            localStorage.setItem('A_life_normal', 'unclear');
+            localStorage.setItem('A_life_hard', 'unclear');
+            localStorage.setItem('A_life_exhard', 'unclear');
 
-        //称号3time,5time:クリアタイム3分台,5分台
-        localStorage.setItem('A_3time_easy', 'unclear');
-        localStorage.setItem('A_5time_easy', 'unclear');
-        localStorage.setItem('A_3time_normal', 'unclear');
-        localStorage.setItem('A_5time_normal', 'unclear');
-        localStorage.setItem('A_3time_hard', 'unclear');
-        localStorage.setItem('A_5time_hard', 'unclear');
-        localStorage.setItem('A_3time_exhard', 'unclear');
-        localStorage.setItem('A_5time_exhard', 'unclear');
+            //称号3time,5time:クリアタイム3分台,5分台
+            localStorage.setItem('A_3time_easy', 'unclear');
+            localStorage.setItem('A_5time_easy', 'unclear');
+            localStorage.setItem('A_3time_normal', 'unclear');
+            localStorage.setItem('A_5time_normal', 'unclear');
+            localStorage.setItem('A_3time_hard', 'unclear');
+            localStorage.setItem('A_5time_hard', 'unclear');
+            localStorage.setItem('A_3time_exhard', 'unclear');
+            localStorage.setItem('A_5time_exhard', 'unclear');
 
-        //称号extra:ここはやり込み要素
+            //称号extra:ここはやり込み要素
 
-        //初期設定終了
-        localStorage.setItem('Check', 'checked');
+            //初期設定終了
+            localStorage.setItem('Check', 'checked');
         }
         ////////////////////////////////////////////////
 
@@ -3898,10 +3941,41 @@ function init() {
         if(mode==65){//normal6　迷路
             game_temp4();
             game_temp1(6);
-            /*
-            startarea(2);
-            goalarea(2);*/
             gamearea(6);
+            startarea(6);
+            goalarea(6);
+            
+
+            //pass1
+            ctx2d.fillStyle=deepskyblue2;
+            ctx2d.fillRect(430,110,40,30);
+            if(pass1==false){
+                ctx2d.fillStyle=deepskyblue;
+                ctx2d.fillRect(420,380,50,10);
+                ctx2d.fillRect(400,270,10,30);}
+            //pass2
+            ctx2d.fillStyle=lightgreen2;
+            ctx2d.fillRect(70,500,30,40);
+            if(pass2==false){
+                ctx2d.fillStyle=lightgreen;
+                ctx2d.fillRect(470,490,10,50);}
+
+            //pass3
+            ctx2d.fillStyle=parple2;
+            ctx2d.fillRect(480,110,40,30);
+            if(pass3==false){
+                ctx2d.fillStyle=parple;
+                ctx2d.fillRect(790,180,40,10);
+                ctx2d.fillRect(480,300,30,10);
+                }
+
+            //pass4
+            ctx2d.fillStyle=bronze2;
+            ctx2d.fillRect(860,510,30,30);
+            if(pass4==false){
+                ctx2d.fillStyle=bronze;
+                ctx2d.fillRect(790,200,40,10);
+                ctx2d.fillRect(790,510,10,30);}
 
             //character
             ctx2d.fillStyle="rgba(0,0,255,"+chara_alpha+")";
@@ -3910,9 +3984,9 @@ function init() {
             //wall////////////////////////////////
             ctx2d.fillStyle=black;
             ctx2d.fillRect(60,200,10,350);
-            ctx2d.fillRect(900,200,10,350);
-            ctx2d.fillRect(470,100,10,350);
-            ctx2d.fillRect(60,540,850,10);
+            ctx2d.fillRect(890,200,10,350);
+            ctx2d.fillRect(470,100,10,390);
+            ctx2d.fillRect(60,540,840,10);
             ctx2d.fillRect(250,100,460,10);
             ctx2d.fillRect(60,200,70,10);
             ctx2d.fillRect(180,200,80,10);
@@ -3923,10 +3997,33 @@ function init() {
             ctx2d.fillRect(120,150,10,60);
             ctx2d.fillRect(240,100,10,110);
             ctx2d.fillRect(60,380,360,10);
+            ctx2d.fillRect(710,100,10,110);
+            ctx2d.fillRect(720,200,70,10);
+            ctx2d.fillRect(830,200,70,10);
+            ctx2d.fillRect(780,100,10,110);
+            ctx2d.fillRect(780,100,120,10);
+            ctx2d.fillRect(830,150,70,10);
+            ctx2d.fillRect(830,150,10,50);
+            ctx2d.fillRect(890,100,10,60);
+            //////////////////////////////////////
 
-            if(pass1==false){
-                ctx2d.fillStyle=deepskyblue;
-                ctx2d.fillRect(420,380,50,10);}
+            //lifeup
+            if(realoneup){
+                ctx2d.fillStyle=oneupcol;
+                ctx2d.fillRect(555,420,30,30);
+                ctx2d.font = "22px san-serif";
+                ctx2d.fillStyle=white;
+                ctx2d.fillText("10", 555, 445);
+            }
+
+            //savepoint
+            if(realsave){
+                ctx2d.fillStyle=savecol;
+                ctx2d.fillRect(480,460,30,30);
+                ctx2d.font = "25px san-serif";
+                ctx2d.fillStyle=black;
+                ctx2d.fillText("S", 487, 485);
+            }
 
             //enemy1 static
             ctx2d.fillStyle=enemycol2;
@@ -3950,16 +4047,125 @@ function init() {
             ctx2d.fillRect(370,300,50,10);
             ctx2d.fillRect(410,300,10,80);
             ctx2d.fillRect(380,140,10,90);
-
             //enemy1 motion
             ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(enemy_motion1(210,30,40,0),250,10,90);///u
+            ctx2d.fillRect(enemy_motion1(210,60,40,0),250,10,90);///u
             ctx2d.fillRect(enemy_motion1(440,20,36,0.8),260,10,80);///u
 
-            //タッチ処理
-            if(chara_x>=430 && chara_x<=451 && chara_y>=110 && chara_y<=121){//blue解除
-                pass1=true;}
+            
+            
 
+            if(pass1==true){
+                //enemy2 static
+                ctx2d.fillStyle=enemycol2;
+                ctx2d.fillRect(100,420,10,120);
+                ctx2d.fillRect(100,420,90,10);
+                ctx2d.fillRect(140,500,80,10);
+                ctx2d.fillRect(220,390,10,120);
+                ctx2d.fillRect(430,420,10,120);
+                ctx2d.fillRect(390,390,10,80);
+                ctx2d.fillRect(390,500,10,40);
+                
+                ctx2d.fillRect(310,500,50,10);
+                ctx2d.fillRect(310,420,50,10);
+                ctx2d.fillRect(260,420,10,120);
+                ctx2d.fillRect(300,420,10,90);
+                //enemy2 motion
+                ctx2d.fillStyle=enemy_color;
+                ctx2d.fillRect(350,enemy_motion3(460,30,30,0),40,10);
+                ctx2d.fillRect(enemy_motion1(180,30,30,0),430,10,40);
+                ctx2d.fillRect(enemy_motion1(140,30,-30,0),460,10,40);}
+            else {
+                ctx2d.fillStyle=black;
+                ctx2d.fillRect(70,390,410,150);
+            }
+            if(pass2==true){
+                //enemy3 static
+                ctx2d.fillStyle=enemycol2;
+                ctx2d.fillRect(510,140,10,350);
+                ctx2d.fillRect(510,140,170,10);
+                ctx2d.fillRect(590,140,10,70);
+                ctx2d.fillRect(630,180,10,70);
+                ctx2d.fillRect(640,180,70,10);
+                ctx2d.fillRect(510,280,170,10);
+                ctx2d.fillRect(670,215,10,75);
+                ctx2d.fillRect(750,240,140,10);
+                ctx2d.fillRect(750,240,10,90);
+                ctx2d.fillRect(785,280,75,10);
+                ctx2d.fillRect(750,320,75,10);
+                ctx2d.fillRect(720,360,140,10);
+                ctx2d.fillRect(850,280,10,90);
+                ctx2d.fillRect(710,210,10,160);
+                ctx2d.fillRect(700,395,160,10);
+                ctx2d.fillRect(750,450,140,10);
+                ctx2d.fillRect(700,400,10,110);
+                ctx2d.fillRect(700,505,160,10);
+
+                //enemy3 motion
+                ctx2d.fillStyle=enemy_color;
+                ctx2d.fillRect(600,440,20,20);
+                enemy_motionc1(600,440,20,-36,0);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,40,-36,0);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,60,-36,0);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,80,-36,0);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,20,-36,Math.PI/3*4);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,40,-36,Math.PI/3*4);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,60,-36,Math.PI/3*4);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,80,-36,Math.PI/3*4);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,20,-36,Math.PI/3*2);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,40,-36,Math.PI/3*2);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,60,-36,Math.PI/3*2);
+                ctx2d.fillRect(a,b,20,20);
+                enemy_motionc1(600,440,80,-36,Math.PI/3*2);
+                ctx2d.fillRect(a,b,20,20);
+
+                enemy_motionc1(790,445,50,36,0.7);
+                ctx2d.fillRect(a,b,20,20);
+                ctx2d.fillRect(enemy_motion1(550,30,52,0),180,10,70);//u
+                ctx2d.fillRect(550,enemy_motion3(240,30,52,0),90,10);//u
+            }
+            else{
+                ctx2d.fillStyle=black;
+                ctx2d.fillRect(480,210,410,330);
+                ctx2d.fillRect(480,110,230,100);
+                ctx2d.fillRect(790,150,40,60);
+            }
+            
+
+
+            //タッチ処理
+            if(chara_x>=430 && chara_x<=451 && chara_y>=110 && chara_y<=121){//pass1解除
+                pass1=true;
+                if(se_keyopen1_check){
+                    se_keyopen.play();
+                    se_keyopen1_check=false;}}
+            if(chara_x>=70 && chara_x<=81 && chara_y>=500 && chara_y<=521){//pass2解除
+                pass2=true;
+                if(se_keyopen2_check){
+                    se_keyopen.play();
+                    se_keyopen2_check=false;}}
+            if(chara_x>=480 && chara_x<=500 && chara_y>=110 && chara_y<=121){//pass3解除
+                pass3=true;
+                if(se_keyopen3_check){
+                    se_keyopen.play();
+                    se_keyopen3_check=false;}}
+            if(chara_x>=860 && chara_x<=870 && chara_y>=510 && chara_y<=521){//blue解除
+                pass4=true;
+                if(se_keyopen4_check){
+                    se_keyopen.play();
+                    se_keyopen4_check=false;}}
+
+            ////ページ遷移の時に関数の初期化を忘れずに
             game_temp3();
         }
 

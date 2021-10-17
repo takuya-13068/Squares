@@ -77,6 +77,17 @@ const se_lifeup=new Howl({
     //license: otologic
 });
 var se_warp_check=true;
+const se_keyopen=new Howl({
+    src: 'sound/se_keyopen.mp3',
+    volume: 0.7,
+    rate: 1,
+    loop: false,
+    format: ['mp3'],
+});
+var se_keyopen1_check=true;
+var se_keyopen2_check=true;
+var se_keyopen3_check=true;
+var se_keyopen4_check=true;
 
 const　bgm1=new Howl({
     src: 'sound/Junkbox.mp3',
