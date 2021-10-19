@@ -229,8 +229,10 @@ function Lifeset(){
         Life=30;
     }
     else if(mode<80){
+        Life=30;
     }
     else{
+        Life=0;
     }
     return Life;
 }
@@ -316,6 +318,12 @@ function location_chara(){
             chara_width=20;
             chara_height=20;
         }
+    }
+    else if(mode==70){
+        chara_x=260;
+        chara_y=280;
+        chara_width=20;
+        chara_height=20;
     }
 
     else if (mode==13){ 
@@ -959,6 +967,22 @@ function startarea(z){
         ctx2d.fillRect(90,110,20,20);
         ctx2d.fillRect(70,130,20,20);
     }
+    if(z==11){
+        ctx2d.fillStyle=startcol_1;
+        for(let i=240; i<321; i+=40){
+            for(let j=260; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=260; i<321; i+=40){
+            for(let j=280; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        ctx2d.fillStyle=startcol_2;
+        for(let i=260; i<321; i+=40){
+            for(let j=260; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for(let i=240; i<321; i+=40){
+            for(let j=280; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+    }
 }
 
 function gamearea(z){
@@ -1364,6 +1388,22 @@ function gamearea(z){
                 ctx2d.fillRect(i,j,20,20);}}
         ctx2d.fillRect(830,110,20,20);
     }
+    if(z==11){
+        ctx2d.fillStyle=white;
+        for (let i=320; i<621; i+=40){
+            for(let j=260; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for (let i=340; i<621; i+=40){
+            for(let j=280; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        ctx2d.fillStyle=lightgray;
+        for (let i=340; i<621; i+=40){
+            for(let j=260; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+        for (let i=320; i<621; i+=40){
+            for(let j=280; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}}
+    }
 }
 
 function goalarea(z){
@@ -1484,6 +1524,26 @@ function goalarea(z){
         ctx2d.fillRect(850,130,20,20);
         ctx2d.fillRect(870,110,20,20);
         
+    }
+    if(z==11){
+        ctx2d.fillStyle=goalcol1;
+        for(let i=620; i<720; i+=40){
+            for(let j=260; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        for(let i=640; i<720; i+=40){
+            for(let j=280; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
+        ctx2d.fillStyle=goalcol2;
+        for(let i=620; i<720; i+=40){
+            for(let j=280; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20)}
+        }
+        for(let i=640; i<720; i+=40){
+            for(let j=260; j<360; j+=40){
+                ctx2d.fillRect(i,j,20,20);}
+        }
     }
 }
 
@@ -2344,20 +2404,24 @@ function game_temp3(){
     if(vecx>realvecx) {realvecx+=0.1;}//入力値よりも小さい時実際の速度を増やす
     if(Math.abs(vecx-realvecx)<0.1) {realvecx=vecx;}//振動が発生しないようにしている
     if(realvecx>0){
-        if(touchwall(chara_x+chara_width+realvecx, chara_y) && touchwall(chara_x+chara_width+realvecx, chara_y+chara_height)) chara_x+=Math.min(realvecx,vec);  
+        if(touchwall(chara_x+chara_width+realvecx, chara_y) && touchwall(chara_x+chara_width+realvecx, chara_y+chara_height)){
+            chara_x+=Math.min(realvecx,vec);}
     }
     else{//負の時
-        if(touchwall(chara_x+realvecx, chara_y) && touchwall(chara_x+realvecx, chara_y+chara_height)) chara_x+=Math.max(realvecx,-vec);  
+        if(touchwall(chara_x+realvecx, chara_y) && touchwall(chara_x+realvecx, chara_y+chara_height)){
+            chara_x+=Math.max(realvecx,-vec);}
     }
     //キャラクターの移動処理 y
     if(vecy<realvecy) {realvecy-=0.1;}
     if(vecy>realvecy) {realvecy+=0.1;}
     if(Math.abs(vecy-realvecy)<0.1) {realvecy=vecy;}
     if(realvecy>0){
-        if(touchwall(chara_x, chara_y+chara_height+realvecy) && touchwall(chara_x+chara_width, chara_y+chara_height+realvecy)) chara_y+=Math.min(realvecy,vec);  
+        if(touchwall(chara_x, chara_y+chara_height+realvecy) && touchwall(chara_x+chara_width, chara_y+chara_height+realvecy)){
+            chara_y+=Math.min(realvecy,vec);}
     }
     else{//負の時
-        if(touchwall(chara_x, chara_y+realvecy) && touchwall(chara_x+chara_width, chara_y+realvecy)) chara_y+=Math.max(realvecy,-vec);  
+        if(touchwall(chara_x, chara_y+realvecy) && touchwall(chara_x+chara_width, chara_y+realvecy)) {
+            chara_y+=Math.max(realvecy,-vec);}
     }
 
     //hit判定
@@ -4223,12 +4287,27 @@ function init() {
         if(mode==70){ //hard1
             game_temp4();
             game_temp1(1);
-            game_temp2();
+
+            startarea(11);
+            gamearea(11);
+            goalarea(11);
+
+            //character
+            ctx2d.fillStyle="rgba(0,0,255,"+chara_alpha+")";
+            ctx2d.fillRect(chara_x,chara_y,chara_width,chara_height);
+
+            //wall////////////////////////////////////
+            ctx2d.fillStyle=black;
+            ctx2d.fillRect(220,240,20,140);
+            ctx2d.fillRect(720,240,20,140);
+            ctx2d.fillRect(220,240,510,20);
+            ctx2d.fillRect(220,360,510,20);
+            //////////////////////////////////////////
 
             //enemy
             ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(500,enemy_motion3(330,130,30),enemy_width,enemy_height);
-            
+            ctx2d.fillRect(enemy_motion5(470,40,6.28), enemy_motion6(300,40,12.56),enemy_width,enemy_height);
+
             game_temp3();
         }
 
