@@ -216,6 +216,10 @@ var t_4;
 //mode65
 var pass1=false, pass2=false, pass3=false, pass4=false;
 
+//image
+const keyimg=new Image();
+keyimg.src= 'image/key.png';
+
 //壁[左端のx, 左端のy, 横幅,縦幅]
 var wall=[[30,60,10,80],[40,50,360,10],[40,140,250,10],[290,140,10,300],[400,60,10,320],[410,370,100,10],[510,380,10,60],[300,440,210,10]];
 var wall1=[[140,200,20,280],[140,180,680,20],[140,480,680,20],[800,200,20,280]];
@@ -1927,6 +1931,8 @@ function next_stage1(){//story mode専用
             hi_check=false;
             oneup_check=false;//1upオブジェクト設定
             loc_check=false;//save真偽りセット
+            realoneup=true;
+            realsave=true;
             location_chara(mode);
             incheck=true;
         
@@ -2072,7 +2078,7 @@ function storyclear(){
         }
     }
 
-    else if(mode==69){
+    else if(mode==65){
         ctx2d.font = "40px san-serif";
         ctx2d.fillText("Normal Mode CLEAR", 280, 290);
 
@@ -2217,7 +2223,7 @@ function pause(){ // Pause画面
     ctx2d.font = "48px HiraMinPro-W6";
     ctx2d.fillText("Pause", 380, 190);
     ctx2d.font = "36px HiraMinPro-W6";
-    ctx2d.fillText("スタートから", 350, 270);
+    ctx2d.fillText("戻る", 350, 270);
     ctx2d.font = "36px HiraMinPro-W6";
     ctx2d.fillText("ステージセレクトへ", 350, 370);
     ctx2d.font = "36px HiraMinPro-W6";
@@ -2235,8 +2241,6 @@ function pause(){ // Pause画面
         to_retry=false;
         selectmode=0;
         pause_check=false;
-        loc_check=false;//save真偽りセット
-        location_chara(mode);
         bgmeasy.volume(0.2);//volume戻す
         bgmnormal.volume(0.2);//volume戻す
     }
@@ -2316,7 +2320,7 @@ function game_temp1(x){
         ctx2d.fillText("残り時間: "+Math.floor((36000-t)/3600)+"m"+Math.floor((36000-t/60)%60)+"s", 685, 64);
     }
     else if(mode>=60 && mode<70){//normal mode
-        ctx2d.fillText("Normal: "+x+"/8", 60, 64);
+        ctx2d.fillText("Normal: "+x+"/6", 60, 64);
 
         ctx2d.font = "28px san-serif";
         ctx2d.lineWidth = "4";
@@ -2334,7 +2338,7 @@ function game_temp1(x){
         ctx2d.fillText("残り時間: "+Math.floor((36000-t)/3600)+"m"+Math.floor((36000-t/60)%60)+"s", 685, 64);
     }
     else if(mode>=70 && mode<80){//hard mode
-        ctx2d.fillText("Hard No."+x, 60, 64);
+        ctx2d.fillText("Hard "+x+"/6", 60, 64);
         ctx2d.font = "28px san-serif";
         ctx2d.fillStyle=blue;
         ctx2d.fillText("Life: "+life, 545, 64);
@@ -2542,7 +2546,7 @@ function game_temp4(){
     ctx2d.fillRect(30,590,900,70);
 }
 
-function gametemp_fade(){
+function gametemp_fade(){//fade画面の黒
     if (incheck){
         fadein();
     }
@@ -2551,6 +2555,18 @@ function gametemp_fade(){
 
     ctx2d.fillStyle="rgba(0,0,0,"+page_alpha+")";//fadeoutの層
     ctx2d.fillRect(30,30,900,660);
+}
+
+function gamebgm1fade(){
+    //bgmfadeout repeat
+    if(bgm1.seek()<24){
+        bgm1_v_c=true;}
+    if(bgm1.seek()>82){
+        if(bgm1_v_c){
+            bgm1.fade(bgm1_v,0,2900);
+            bgm1_v_c=false;}}
+    if(bgm1.volume("play1")==0){
+        bgm1.volume(bgm1_v);}
 }
 
 //////////////////////////////////////////////////////////////
@@ -2642,6 +2658,7 @@ function init() {
         ////////////////////////////////////////////////
 
         if (mode==0) { //タイトル画面
+            gamebgm1fade();
             location_chara();
             t++;
             game_temp4();
@@ -2679,12 +2696,13 @@ function init() {
         }
 
         if (mode==1){ //セレクト画面
+        
             if(bgm1_check){
                 bgm1.play("play1");
                 bgm1_check=false;
             }
+            gamebgm1fade();
             game_temp4();
-
             
             ctx2d.fillStyle=white;
             ctx2d.font = "32px san-serif";
@@ -2789,6 +2807,7 @@ function init() {
         }
 
         if (mode==2){ //stageselect画面
+            gamebgm1fade();
             if(bgm1_check){
                 bgm1.play("play1");
                 bgm1_check=false;
@@ -2864,6 +2883,7 @@ function init() {
         }
 
         if(mode==3){ //story modeの選択画面
+            gamebgm1fade();
             if(bgm1_check){
                 bgm1.play("play1");
                 bgm1_check=false;
@@ -2997,6 +3017,7 @@ function init() {
         }
 
         if(mode==5){ //称号
+            gamebgm1fade();
             game_temp4();
             ctx2d.fillStyle=white;//
             ctx2d.font = "24px san-serif";
@@ -3465,7 +3486,6 @@ function init() {
             ctx2d.fillRect(620,enemy_motion3(330,130,20,0),enemy_width,enemy_height);
             
             gametemp_fade();
-
             game_temp3();
         }
         if(mode==51){ //easy2
@@ -3492,7 +3512,6 @@ function init() {
             
 
             gametemp_fade();
-            
             game_temp3();
         }
         if(mode==52){ //easy3
@@ -3511,7 +3530,7 @@ function init() {
                 }
             }
 
-            
+            gametemp_fade();
             game_temp3();
         }
         if(mode==53){ //easy4
@@ -3541,7 +3560,7 @@ function init() {
             ctx2d.fillRect(660,enemy_motion3(330,130,-20,3),enemy_width,enemy_height);
             
 
-            
+            gametemp_fade();
             game_temp3();
         }
         if(mode==54){ //easy5
@@ -3582,6 +3601,7 @@ function init() {
             ctx2d.fillRect(540,400,100,10);
             ctx2d.fillRect(630,410,10,30);
 
+            gametemp_fade();
             game_temp3();
         }
         if(mode==55){ //easy6
@@ -3607,6 +3627,7 @@ function init() {
             enemy_motionc1(590,410,50,17,0);
             ctx2d.fillRect(a,b,enemy_width,enemy_height);
 
+            gametemp_fade();
             game_temp3();
         }
 
@@ -3617,21 +3638,22 @@ function init() {
 
             //enemy
             ctx2d.fillStyle=enemycol2;
-            ctx2d.fillRect(260,280,60,120);
-            ctx2d.fillRect(500,280,60,120);
-            ctx2d.fillRect(360,200,100,60);
-            ctx2d.fillRect(360,420,100,60);
+            ctx2d.fillRect(280,280,60,120);
+            ctx2d.fillRect(520,280,60,120);
+            ctx2d.fillRect(380,200,100,60);
+            ctx2d.fillRect(380,420,100,60);
             ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(enemy_motion1(400,80,-35,0),260,enemy_width,enemy_height*2);
-            ctx2d.fillRect(enemy_motion1(400,80,35,1),300,enemy_width,enemy_height*2);
-            ctx2d.fillRect(enemy_motion1(400,80,-35,1),340,enemy_width,enemy_height*2);
-            ctx2d.fillRect(enemy_motion1(400,80,35,0),380,enemy_width,enemy_height*2);
+            ctx2d.fillRect(enemy_motion1(420,80,-35,0),260,enemy_width,enemy_height*2);
+            ctx2d.fillRect(enemy_motion1(420,80,35,1),300,enemy_width,enemy_height*2);
+            ctx2d.fillRect(enemy_motion1(420,80,-35,1),340,enemy_width,enemy_height*2);
+            ctx2d.fillRect(enemy_motion1(420,80,35,0),380,enemy_width,enemy_height*2);
 
-            enemy_motionc1(600,240,32,20,0);
+            enemy_motionc1(620,240,32,20,0);
             ctx2d.fillRect(a,b,enemy_width,enemy_height);
-            enemy_motionc1(600,420,32,20,0);
+            enemy_motionc1(620,420,32,20,0);
             ctx2d.fillRect(a,b,enemy_width,enemy_height);
 
+            gametemp_fade();
             game_temp3();
         }
 
@@ -3748,7 +3770,7 @@ function init() {
 
             //ctx2d.fillRect(enemy_motion4(540,-120),240,enemy_width,enemy_height);
 
-
+            gametemp_fade();
             game_temp3();
         }
 
@@ -3870,7 +3892,7 @@ function init() {
 
             warp(62);
 
-
+            gametemp_fade();//warpのため
             game_temp3();
         }
 
@@ -4070,6 +4092,7 @@ function init() {
             ctx2d.fillStyle=deepskyblue2;
             ctx2d.fillRect(430,110,40,30);
             if(pass1==false){
+                ctx2d.drawImage(keyimg,432,110,36,36);
                 ctx2d.fillStyle=deepskyblue;
                 ctx2d.fillRect(420,380,50,10);
                 ctx2d.fillRect(400,270,10,30);}
@@ -4280,6 +4303,7 @@ function init() {
                     se_keyopen.play();
                     se_keyopen4_check=false;}}
 
+
             ////ページ遷移の時に関数の初期化を忘れずに
             game_temp3();
         }
@@ -4306,7 +4330,7 @@ function init() {
 
             //enemy
             ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(enemy_motion5(470,40,6.28), enemy_motion6(300,40,12.56),enemy_width,enemy_height);
+            ctx2d.fillRect(enemy_motion5(470,55,6.2), enemy_motion6(300,40,12.4),enemy_width,enemy_height);
 
             game_temp3();
         }
@@ -4324,6 +4348,7 @@ function init() {
         }
         
         if (mode==-1){ //設定画面
+            gamebgm1fade();
             game_temp4();
 
             ctx2d.fillStyle=white;//
@@ -4449,6 +4474,7 @@ function init() {
         }
 
         if(mode==-2){ //操作方法画面
+            gamebgm1fade();
             game_temp4();
 
             ctx2d.fillStyle=white;//
