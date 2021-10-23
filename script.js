@@ -388,10 +388,9 @@ function keypress(mykey,mykeycode){ //キー入力イベント
     if (mykey==" " && mode==0){ //タイトル画面のキー入力
         space_check=true;
         se_1.play();
-        if(bgm1_check){
-            bgm1.play("play1");
-            bgm1_check=false;
-        }
+        if(bgm0_check){
+            bgm0.play();
+            bgm0_check=false;}
     }
 
     else if (mode==1){ //セレクト画面
@@ -1861,7 +1860,7 @@ function next_stage1(){//story mode専用
         ctx2d.font = "56px san-serif";
         ctx2d.fillText("Round"+(mode-49)+" CLEAR!!", 280, 160);
     }
-    else if(mode>=60 && mode<69){//normal
+    else if(mode>=60 && mode<65){//normal
         hi_check=true;
         normal_hi=Number(localStorage.getItem('normal_a'));
         if(mode-59>normal_hi){
@@ -2070,10 +2069,10 @@ function storyclear(){
         if(life==9){//ノーミスクリア
             localStorage.setItem('A_life_easy', 'clear');
         }
-        if(10*60*60-t<=5*60*60){//5分以内のクリア
+        if(10*60*60-t>=5*60*60){//5分以内のクリア
             localStorage.setItem('A_5time_easy', 'clear');
         }
-        if(10*60*60-t<=3*60*60){//3分以内のクリア
+        if(10*60*60-t>=7*60*60){//3分以内のクリア
             localStorage.setItem('A_3time_easy', 'clear');
         }
     }
@@ -2094,13 +2093,13 @@ function storyclear(){
         if(localStorage.getItem('A_clear_easy')=='clear' && localStorage.getItem('A_clear_normal')=='clear' && localStorage.getItem('A_clear_hard')=='clear'){
             localStorage.setItem('A_allclear', 'clear');//allclearの更新
         }
-        if(life==9){//ノーミスクリア
+        if(life==Life){//ノーミスクリア
             localStorage.setItem('A_life_normal', 'clear');
         }
-        if(10*60*60-t<=5*60*60){//5分以内のクリア
+        if(10*60*60-t>=5*60*60){//5分以内のクリア
             localStorage.setItem('A_5time_normal', 'clear');
         }
-        if(10*60*60-t<=3*60*60){//3分以内のクリア
+        if(10*60*60-t>=7*60*60){//3分以内のクリア
             localStorage.setItem('A_3time_normal', 'clear');
         }
     }
@@ -2124,10 +2123,10 @@ function storyclear(){
         if(life==9){//ノーミスクリア
             localStorage.setItem('A_life_hard', 'clear');
         }
-        if(10*60*60-t<=5*60*60){//5分以内のクリア
+        if(10*60*60-t>=5*60*60){//5分以内のクリア
             localStorage.setItem('A_5time_hard', 'clear');
         }
-        if(10*60*60-t<=3*60*60){//3分以内のクリア
+        if(10*60*60-t>=7*60*60){//3分以内のクリア
             localStorage.setItem('A_3time_hard', 'clear');
         }
     }
@@ -2480,7 +2479,7 @@ function game_temp3(){
             next_stage();
         }
         else if(mode>=50 && mode<100){
-            if(mode==55 || mode==69 || mode==79 || mode==89){
+            if(mode==55 || mode==65 || mode==79 || mode==89){
                 storyclear();
             }
             else{
@@ -2557,17 +2556,7 @@ function gametemp_fade(){//fade画面の黒
     ctx2d.fillRect(30,30,900,660);
 }
 
-function gamebgm1fade(){
-    //bgmfadeout repeat
-    if(bgm1.seek()<24){
-        bgm1_v_c=true;}
-    if(bgm1.seek()>82){
-        if(bgm1_v_c){
-            bgm1.fade(bgm1_v,0,2900);
-            bgm1_v_c=false;}}
-    if(bgm1.volume("play1")==0){
-        bgm1.volume(bgm1_v);}
-}
+
 
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
@@ -2656,9 +2645,7 @@ function init() {
             localStorage.setItem('Check', 'checked');
         }
         ////////////////////////////////////////////////
-
         if (mode==0) { //タイトル画面
-            gamebgm1fade();
             location_chara();
             t++;
             game_temp4();
@@ -2684,10 +2671,6 @@ function init() {
             if (space_check){ //ゲーム画面への遷移
                 fadeout();
                 if (page_check){
-                    if(bgm1_check){
-                        bgm1.play("play1");
-                        bgm1_check=false;
-                    }
                     mode=1;
                     space_check=false;
                     incheck=true;
@@ -2696,12 +2679,15 @@ function init() {
         }
 
         if (mode==1){ //セレクト画面
-        
-            if(bgm1_check){
-                bgm1.play("play1");
-                bgm1_check=false;
-            }
-            gamebgm1fade();
+            if(bgm0_check){
+                bgm0.play();
+                bgm0_check=false;}
+            bgm0.on('end',() => {
+                if(bgm1_check){
+                    bgm1.play("play1");
+                    bgm1_check=false;}
+            });
+
             game_temp4();
             
             ctx2d.fillStyle=white;
@@ -2807,11 +2793,15 @@ function init() {
         }
 
         if (mode==2){ //stageselect画面
-            gamebgm1fade();
-            if(bgm1_check){
-                bgm1.play("play1");
-                bgm1_check=false;
-            }
+            if(bgm0_check){
+                bgm0.play();
+                bgm0_check=false;}
+            bgm0.on('end',() => {
+                if(bgm1_check){
+                    bgm1.play("play1");
+                    bgm1_check=false;}
+            });
+
             game_temp4();
 
             //ctx2d.fillStyle="rgba(0,0,0,1.0)";
@@ -2883,11 +2873,15 @@ function init() {
         }
 
         if(mode==3){ //story modeの選択画面
-            gamebgm1fade();
-            if(bgm1_check){
-                bgm1.play("play1");
-                bgm1_check=false;
-            }
+            if(bgm0_check){
+                bgm0.play();
+                bgm0_check=false;}
+            bgm0.on('end',() => {
+                if(bgm1_check){
+                    bgm1.play("play1");
+                    bgm1_check=false;}
+            });
+
             game_temp4();
             
             ctx2d.fillStyle=white;
@@ -2949,6 +2943,7 @@ function init() {
                     life=Lifeset();
                     //sound
                     bgm1.stop();//bgm停止
+                    bgm0_check=true;
                     bgm1_check=true;//bgm関数初期化
                     bgmeasy.play();//easybgm開始
                     bgmeasy.fade(0,0.2,5000);//fadein
@@ -2957,7 +2952,7 @@ function init() {
             if (to_normal){ //normalステージへの遷移
                 fadeout();
                 if(page_check){
-                    mode=65;
+                    mode=60;
                     to_normal=false;
                     selectmode=0;
                     incheck=true;
@@ -2968,6 +2963,7 @@ function init() {
 
 
                     bgm1.stop();//bgm停止
+                    bgm0_check=true;
                     bgm1_check=true;//bgm関数初期化
                     bgmnormal.play("play1");//normalbgm再生
                     bgmnormal.fade(0,0.2,5000);//fadein
@@ -3002,6 +2998,7 @@ function init() {
                     life=Lifeset();
 
                     bgm1.stop();//bgm停止
+                    bgm0_check=true;
                     bgm1_check=true;//bgm関数初期化
                 }
             }
@@ -3017,7 +3014,6 @@ function init() {
         }
 
         if(mode==5){ //称号
-            gamebgm1fade();
             game_temp4();
             ctx2d.fillStyle=white;//
             ctx2d.font = "24px san-serif";
@@ -3035,7 +3031,7 @@ function init() {
             if(selectmode==0){
                 make_shape(905,325,885,312,885,338); //三角形描画
 
-                    //称号判定
+                //称号判定
                 //stage CLEAR(easy-exhard)
                 if(localStorage.getItem('A_clear_easy')=='clear'){
                     ctx2d.fillStyle=black;
@@ -4092,7 +4088,7 @@ function init() {
             ctx2d.fillStyle=deepskyblue2;
             ctx2d.fillRect(430,110,40,30);
             if(pass1==false){
-                ctx2d.drawImage(keyimg,432,110,36,36);
+                //ctx2d.drawImage(keyimg,432,110,36,36);
                 ctx2d.fillStyle=deepskyblue;
                 ctx2d.fillRect(420,380,50,10);
                 ctx2d.fillRect(400,270,10,30);}
@@ -4348,7 +4344,6 @@ function init() {
         }
         
         if (mode==-1){ //設定画面
-            gamebgm1fade();
             game_temp4();
 
             ctx2d.fillStyle=white;//
@@ -4458,7 +4453,8 @@ function init() {
                     incheck=true;
                     //sound
                     bgm1.stop();
-                    bgm1.volume(0.2);
+                    bgm1.volume(bgm1_v);
+                    bgm0_check=true;
                     bgm1_check=true;//bgm関数初期化
                 }
             }
@@ -4474,7 +4470,6 @@ function init() {
         }
 
         if(mode==-2){ //操作方法画面
-            gamebgm1fade();
             game_temp4();
 
             ctx2d.fillStyle=white;//
