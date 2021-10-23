@@ -89,21 +89,29 @@ var se_keyopen2_check=true;
 var se_keyopen3_check=true;
 var se_keyopen4_check=true;
 
+
 var bgm1_v=0.2;
-var bgm1_v_c=true;
+var bgm0_check=true;
+const　bgm0=new Howl({
+    src: 'sound/Intro.wav',
+    volume: bgm1_v,
+    html5: true,
+    loop: false,
+    format: ['mp3'],
+});
+
+var bgm1_check=true;
 const　bgm1=new Howl({
-    src: 'sound/Junkbox.mp3',
+    src: 'sound/Junkbox.wav',
     volume: bgm1_v,
     html5: true,
     loop: true,
     format: ['mp3'],
     sprite: {
-        play1: [2300,82500,true],//2-86s
+        play1: [0,82000,true],//2-86s
         //play1: [80000,4800,true],//84800
     },
 });
-var bgm1_check=true;
-
 
 const bgmeasy=new Howl({
     src: 'sound/easystage.wav',
