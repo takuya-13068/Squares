@@ -93,7 +93,7 @@ var se_keyopen4_check=true;
 var bgm1_v=0.2;
 var bgm0_check=true;
 const　bgm0=new Howl({
-    src: 'sound/Intro.wav',
+    src: 'sound/Intro.mp3',
     volume: bgm1_v,
     html5: true,
     loop: false,
@@ -102,19 +102,19 @@ const　bgm0=new Howl({
 
 var bgm1_check=true;
 const　bgm1=new Howl({
-    src: 'sound/Junkbox.wav',
+    src: 'sound/Loop.mp3',
     volume: bgm1_v,
     html5: true,
     loop: true,
     format: ['mp3'],
     sprite: {
-        play1: [0,82000,true],//2-86s
+        play1: [0,82000],//2-86s
         //play1: [80000,4800,true],//84800
     },
 });
 
 const bgmeasy=new Howl({
-    src: 'sound/easystage.wav',
+    src: 'sound/easystage.mp3',
     volume: 0.2,
     loop: true,
     format: ['mp3'],

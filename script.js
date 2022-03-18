@@ -131,7 +131,7 @@ var transcount=100;
 var transcheck=true;
 
 //1menu画面
-var selectmode=1;
+var selectmode=0;
 var to_play=false;
 var to_story=false;
 var to_title=false;
@@ -511,7 +511,7 @@ function keypress(mykey,mykeycode){ //キー入力イベント
     }
 
     else if (mode==2){ //score画面
-        if (mykeycode==40 && (selectmode!=4)){
+        if (mykeycode==40 && (selectmode!=3)){
             selectmode+=1;//矢印を下に選択
             se_cursor.play();
         }
@@ -520,7 +520,7 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             se_cursor.play();
         }
         if (mykey==" "){ //spaceキー
-            if (selectmode==4){ //戻る画面へ
+            if (selectmode==3){ //戻る画面へ
                 to_menu=true;
             }
             else {
@@ -548,9 +548,9 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             else if (selectmode==2){ //hard mode
                 to_hard=true;
             }
-            else if (selectmode==3){ //extrahard mode
+            /*else if (selectmode==3){ //extrahard mode
                 to_extrahard=true;
-            }
+            }*/
             else if (selectmode==4){ //戻る画面へ
                 to_menu=true;
             }
@@ -1979,16 +1979,16 @@ function next_stage(){
     ctx2d.fillStyle=pastle_parple_z;
     ctx2d.fillRect(100,100,720,480);
     ctx2d.fillStyle=black;//
-    ctx2d.font = "48px HiraMinPro-W6";
+    ctx2d.font = "48px san-serif";
     ctx2d.fillText("You're GOAL!!", 300, 190);
     ctx2d.fillStyle=black;//
-    ctx2d.font = "36px HiraMinPro-W6";
+    ctx2d.font = "36px";
     ctx2d.fillText("次のステージへ", 350, 270);
     ctx2d.fillStyle=black;//
-    ctx2d.font = "36px HiraMinPro-W6";
+    ctx2d.font = "36px ";
     ctx2d.fillText("コース一覧へ", 350, 370);
     ctx2d.fillStyle=black;//
-    ctx2d.font = "36px HiraMinPro-W6";
+    ctx2d.font = "36px ";
     ctx2d.fillText("タイトルに戻る", 350, 470);
     //ctx2d.fillStyle=black;
     //ctx2d.font = "36px HiraMinPro-W6";
@@ -2095,7 +2095,7 @@ function next_stage1(){//story mode専用
         ctx2d.font = "56px san-serif";
         ctx2d.fillText("Round"+(mode-79)+" CLEAR!!", 280, 160);
     }
-    ctx2d.font = "36px HiraMinPro-W6";
+    ctx2d.font = "36px";
     ctx2d.fillText("次のステージへ", 350, 270);
     ctx2d.fillText("レベル画面へ", 350, 370);
     ctx2d.fillText("タイトルに戻る", 350, 470);
@@ -2300,7 +2300,7 @@ function storyclear(){
         }
     }
 
-    else if(mode>=70 && mode<79){//hard modeクリア
+    else if(mode==73){//hard modeクリア
         ctx2d.font = "40px san-serif";
         ctx2d.fillText("Hard Mode CLEAR", 280, 290);
 
@@ -2448,7 +2448,7 @@ function pause(){ // Pause画面
             bgmeasy.stop();//bgm停止
             bgmeasy.volume(0.2);//volume戻す
         }
-        if(mode>=60 && mode<=69){
+        if(mode>=60 && mode<=73){
             bgmnormal.stop();//bgm停止
             bgmnormal.volume(0.2);//volume戻す
         }
@@ -2502,7 +2502,7 @@ function game_temp1(x){
         else if(mode>=60 && mode<70){//normal mode
         ctx2d.fillText("Normal: "+x+"/6", 60, 64);}
         else if(mode>=70 && mode<80){//hard mode
-        ctx2d.fillText("Hard "+x+"/6", 60, 64);}
+        ctx2d.fillText("Hard "+x+"/4", 60, 64);}
         else if(mode>=80 && mode<90){//extrahard mode
         ctx2d.fillText("Extrahard No."+x, 60, 64);}
 
@@ -2648,7 +2648,7 @@ function game_temp3(){
             next_stage();
         }
         else if(mode>=50 && mode<100){
-            if(mode==55 || mode==65 || mode==79 || mode==89){
+            if(mode==55 || mode==65 || mode==73){
                 storyclear();
             }
             else{
@@ -2986,7 +2986,7 @@ function init() {
             //ctx2d.fillText("Mode: "+selectmode, 300, 500);
             ctx2d.fillStyle=white;
             ctx2d.font = "28px san-serif";
-            ctx2d.fillText("Stage", 60, 64);
+            ctx2d.fillText("Stage", 60, 60);
 
             text_ani(0.3,0.01,0.01);
             var white_trans="rgba(255,255,255,"+text_trans+")";
@@ -3000,9 +3000,7 @@ function init() {
         
             ctx2d.fillText("Stage3", 400, 380);
 
-            ctx2d.fillText("Stage4", 400, 480);
-
-            ctx2d.fillText("Menuに戻る", 400, 580);
+            ctx2d.fillText("Menuに戻る", 400, 480);
 
             ctx2d.font = "40px 'Impact'";
             ctx2d.lineWidth = "5";
@@ -3021,9 +3019,7 @@ function init() {
             else if(selectmode==3){
                 make_shape(340,467,290,497,290,437); //三角形描画
             }
-            else if(selectmode==4){
-                make_shape(340,567,290,597,290,537); //三角形描画
-            }
+            
 
             gametemp_fade();
 
@@ -3073,10 +3069,10 @@ function init() {
             ctx2d.fillStyle=black;
             ctx2d.font = "30px san-serif";
             ctx2d.fillText("Easy", 400, 180);
-            ctx2d.fillText("Normal", 400, 280);
-            ctx2d.fillText("Hard", 400, 380);
-            ctx2d.fillText("????", 400, 480);
-            ctx2d.fillText("Menuに戻る", 400, 580);
+            ctx2d.fillText("Normal", 400, 260);
+            ctx2d.fillText("Hard", 400, 340);
+            ctx2d.fillText("????", 400, 420);
+            ctx2d.fillText("Menuに戻る", 400, 500);
 
             ctx2d.font = "40px 'Impact'";
             ctx2d.lineWidth = "5";
@@ -3086,16 +3082,16 @@ function init() {
                 make_shape(340,167,290,197,290,137); //三角形描画
             }
             else if(selectmode==1){
-                make_shape(340,267,290,297,290,237); //三角形描画
+                make_shape(340,247,290,277,290,217); //三角形描画
             }
             else if(selectmode==2){
-                make_shape(340,367,290,397,290,337); //三角形描画
+                make_shape(340,327,290,357,290,297); //三角形描画
             }
             else if(selectmode==3){
-                make_shape(340,467,290,497,290,437); //三角形描画
+                make_shape(340,407,290,437,290,377); //三角形描画
             }
             else if(selectmode==4){
-                make_shape(340,567,290,597,290,537); //三角形描画
+                make_shape(340,487,290,517,290,457); //三角形描画
             }
 
             if (incheck){
@@ -3129,7 +3125,7 @@ function init() {
             if (to_normal){ //normalステージへの遷移
                 fadeout();
                 if(page_check){
-                    mode=64;
+                    mode=60;
                     to_normal=false;
                     selectmode=0;
                     incheck=true;
@@ -3148,7 +3144,7 @@ function init() {
             if (to_hard){ //hardステージへの遷移
                 fadeout();
                 if(page_check){
-                    mode=73;
+                    mode=70;
                     to_hard=false;
                     selectmode=0;
                     incheck=true;
@@ -3158,7 +3154,10 @@ function init() {
                     life=Lifeset();
 
                     bgm1.stop();//bgm停止
+                    bgm0_check=true;
                     bgm1_check=true;//bgm関数初期化
+                    bgmnormal.play("play1");//normalbgm再生
+                    bgmnormal.fade(0,0.2,5000);//fadein
                 }
             }
             if (to_extrahard){ //extrahardへの遷移
@@ -3545,96 +3544,7 @@ function init() {
             game_temp3();
         }
 
-        if (mode==13) { //プレイ画面
-            game_temp4();
-            t++;//システム系の処理
-            //2次元のリセット処理
-            ctx2d.clearRect(0,0,width,height);
-
-            ctx2d.fillStyle=black;//
-            ctx2d.fillRect(30,30,900,60);
-            ctx2d.fillStyle=black;//
-            ctx2d.fillRect(30,630,900,60);
-            ctx2d.fillStyle=pastle_parple;
-            ctx2d.fillRect(30,90,900,540);
-            //startarea
-            startarea(1);
-
-            //goalarea
-            ctx2d.fillStyle=goalcol1;
-            ctx2d.fillRect(460,380,50,60);
-            //fieldarea1
-            ctx2d.fillStyle=white;
-            ctx2d.fillRect(90,60,210,80);
-            //fieldarea2
-            ctx2d.fillStyle=white;
-            ctx2d.fillRect(300,60,100,320);
-            //fieldarea3
-            ctx2d.fillStyle=white;
-            ctx2d.fillRect(300,380,160,60);
-            //wall0
-            ctx2d.fillStyle=black;
-            ctx2d.fillRect(wall[0][0],wall[0][1],wall[0][2],wall[0][3]);
-            //wall1
-            ctx2d.fillStyle=black;
-            ctx2d.fillRect(wall[1][0],wall[1][1],wall[1][2],wall[1][3]);
-            //wall2
-            ctx2d.fillStyle=black;
-            ctx2d.fillRect(wall[2][0],wall[2][1],wall[2][2],wall[2][3]);
-            //wall3
-            ctx2d.fillStyle=black;
-            ctx2d.fillRect(wall[3][0],wall[3][1],wall[3][2],wall[3][3]);
-            //wall4
-            ctx2d.fillStyle=black;
-            ctx2d.fillRect(wall[4][0],wall[4][1],wall[4][2],wall[4][3]);
-            //wall5
-            ctx2d.fillStyle=black;
-            ctx2d.fillRect(wall[5][0],wall[5][1],wall[5][2],wall[5][3]);
-            //wall6
-            ctx2d.fillStyle=black;
-            ctx2d.fillRect(wall[6][0],wall[6][1],wall[6][2],wall[6][3]);
-            //wall7
-            ctx2d.fillStyle=black;
-            ctx2d.fillRect(wall[7][0],wall[7][1],wall[7][2],wall[7][3]);
-            //character
-            ctx2d.fillStyle="rgba(0,0,255,"+chara_alpha+")";
-            ctx2d.fillRect(chara_x,chara_y,chara_width,chara_height);
-            //enemy1
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(130,enemy_motion3(90,40,-40,0),enemy_width,enemy_height);
-            //enemy2
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(150,enemy_motion3(90,40,40,0),enemy_width,enemy_height);
-            //enemy3
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(170,enemy_motion3(90,40,-40,0),enemy_width,enemy_height);
-            //enemy4
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(190,enemy_motion3(90,40,40,0),enemy_width,enemy_height);
-            //enemy5
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(210,enemy_motion3(90,40,-40,0),enemy_width,enemy_height);
-            //enemy6
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(230,enemy_motion3(90,40,40,0),enemy_width,enemy_height);
-            //enemy7
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(enemy_motion1(340,40,24,0),300,enemy_width,enemy_height);
-            //enemy8
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(enemy_motion2(340,40,15,0),320,enemy_width,enemy_height);
-            //enemy9
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(enemy_motion1(340,40,24,0),340,enemy_width,enemy_height);
-            //enemy10
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(enemy_motion2(340,40,15,0),360,enemy_width,enemy_height);
-            //enemy11
-            ctx2d.fillStyle=enemy_color;
-            ctx2d.fillRect(enemy_motion5(340,40,12.56,0), enemy_motion6(230,40,6.28,0),enemy_width,enemy_height);
-
-            game_temp3();
-        }
+        
 
         if(mode==50){ //easy1
             game_temp4();
@@ -4727,7 +4637,7 @@ function init() {
             ctx2d.fillText("Menuに戻る", config_textx, 500);
 
             if (selectmode==0){
-                make_shape(200,187,160,197,160,137); //三角形描画
+                make_shape(200,187,160,217,160,157); //三角形描画
             }
             if (selectmode==1){
                 make_shape(200,287,160,317,160,257); //三角形描画
@@ -4779,7 +4689,7 @@ function init() {
                 ctx2d.fillRect(100,90,760,480);
 
                 if(datareset_do==false){
-                    ctx2d.font = "40px san-serif san-serif";
+                    ctx2d.font = "40px san-serif";
                     ctx2d.fillStyle=black;
                     ctx2d.fillText("本当にデータを初期化しますか？", 200, 220);
                     ctx2d.font = "28px san-serif";
@@ -4844,7 +4754,7 @@ function init() {
             ctx2d.fillText("Space: Menu画面へ", 60, 628);
 
             ctx2d.fillStyle=black;//
-            ctx2d.font = "24px HiraMinPro-W6";
+            ctx2d.font = "24px san-serif";
             ctx2d.fillText("・キャラクター操作は十字キー操作です", 90, 170);
             ctx2d.fillText("・Deathはこれまでに敵にやられた回数です(やり直すとリセットされます)", 90, 220);
             ctx2d.fillText("・プレイ中、Pキーで一時停止画面に移動できます", 90, 270);
