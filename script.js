@@ -663,6 +663,8 @@ function keypress(mykey,mykeycode){ //キー入力イベント
             bgmnormal.volume(0.2);
         }
     }
+
+    event.preventDefault();
 }
 
 function keyup(mykey,mykeycode){ //キーを離したイベント
