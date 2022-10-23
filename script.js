@@ -25,6 +25,8 @@ function init() {
     tick();
 
     function tick() {
+        setTimeout(function() {
+
         //dataの管理
         if(localStorage.getItem('Check')==undefined){
             //初期化の処理
@@ -2035,5 +2037,6 @@ function init() {
             }
         }
         requestAnimationFrame(tick);
+    }, 1000/80);
     }
 }
